@@ -9,7 +9,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body>
@@ -35,15 +37,9 @@ export default function RootLayout({
           </nav>
         </header>
 
-        <main style={{ maxWidth: 1000, margin: "0 auto", padding: "24px" }}>
+        <main style={{ maxWidth: 1000, margin: "0 auto", padding: 24 }}>
           {children}
         </main>
-
-        <footer style={{ borderTop: "1px solid #e5e5e5", marginTop: 40 }}>
-          <div style={{ maxWidth: 1000, margin: "0 auto", padding: "16px 24px" }}>
-            <small>© {new Date().getFullYear()} Evan Demsey</small>
-          </div>
-        </footer>
       </body>
     </html>
   );
