@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import type { Project } from "@prisma/client";
 
 export default async function AdminPage() {
-  const projects = await prisma.project.findMany({
+  const projects: Project[] = await prisma.project.findMany({
     orderBy: { createdAt: "desc" },
   });
 
@@ -12,7 +13,7 @@ export default async function AdminPage() {
       <Link href="/admin/new">+ New Project</Link>
 
       <ul>
-        {projects.map((p) => (
+        {projects.map((p: Project) => (
           <li key={p.id}>
             {p.title} — <Link href={`/admin/${p.id}/edit`}>Edit</Link>
           </li>
