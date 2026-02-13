@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import type { Project } from "@prisma/client";
 
 export default async function AdminPage() {
-  const projects: Project[] = await prisma.project.findMany({
+  const projects = await prisma.project.findMany({
     orderBy: { createdAt: "desc" },
   });
 
