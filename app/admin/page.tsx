@@ -13,7 +13,7 @@ export default async function AdminPage() {
       <Link href="/admin/new">+ New Project</Link>
 
       <ul>
-        {projects.map((p: Project) => (
+        {projects.map((p) => (
           <li key={p.id}>
             {p.title} — <Link href={`/admin/${p.id}/edit`}>Edit</Link>
           </li>
