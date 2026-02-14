@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import DeleteButton from "./DeleteButton";
 
 export default async function AdminPage() {
   const projects = await prisma.project.findMany({
@@ -15,6 +16,7 @@ export default async function AdminPage() {
         {projects.map((p) => (
           <li key={p.id}>
             {p.title} — <Link href={`/admin/${p.id}/edit`}>Edit</Link>
+            <DeleteButton id={project.id} />
           </li>
         ))}
       </ul>

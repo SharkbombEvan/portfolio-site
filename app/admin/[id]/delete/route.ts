@@ -1,10 +1,12 @@
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
+
+export const runtime = "nodejs";
 
 export async function POST(
   _req: Request,
   { params }: { params: { id: string } }
 ) {
   await prisma.project.delete({ where: { id: params.id } });
-  redirect("/admin");
+  return NextResponse.json({ ok: true });
 }
