@@ -17,16 +17,12 @@ datasource db {
 
 
 model Project {
-  id          String   @id @default(cuid())
-  title       String
-  slug        String   @unique
-  summary     String
-  content     String?
-  tech        String[] @default([])
-  coverImage  String?
-  demoUrl     String?
-  repoUrl     String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  summary   String?
+  contentMd String   @db.Text  // markdown body
+  images    String[]           // array of image URLs
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
-
