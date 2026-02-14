@@ -5,8 +5,28 @@ export const runtime = "nodejs";
 
 export async function POST(
   _req: Request,
-  { params }: { params: { id: string } }
+  ctx: { params: Promise<{ id: string }> }
 ) {
-  await prisma.project.delete({ where: { id: params.id } });
-  return NextResponse.json({ ok: true });
+  const { id } = await ctx.params; // ✅ unwrap params promise
+
+  console.log("DELETE POST hit. id =", id);
+
+  if (!id) {
+    return NextResponse.json({ ok: false, error: "Missing id" }, { status: 400 });
+  }
+
+  try {
+    const deleted = await prisma.project.delete({
+      where: { id },
+      select: { id: true },
+    });
+
+    return NextResponse.json({ ok: true, deleted });
+  } catch (err: any) {
+    console.error("DELETE ERROR FULL:", err);
+    return NextResponse.json(
+      { ok: false, error: err?.message ?? "Delete failed", code: err?.code ?? null },
+      { status: 500 }
+    );
+  }
 }

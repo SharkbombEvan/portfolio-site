@@ -16,7 +16,7 @@ export default async function AdminPage() {
         {projects.map((p) => (
           <li key={p.id}>
             {p.title} — <Link href={`/admin/${p.id}/edit`}>Edit</Link>
-            <DeleteButton id={project.id} />
+            <DeleteButton id={p.id} />
           </li>
         ))}
       </ul>
