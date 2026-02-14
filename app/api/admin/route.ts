@@ -3,9 +3,9 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { title, slug, summary, contentMd, images } = body;
+  const { title, slug, summary, content, images } = body;
 
-  if (!title || !slug || !contentMd) {
+  if (!title || !slug || !content) {
     return NextResponse.json(
       { error: "title, slug, and contentMd are required" },
       { status: 400 }
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       title,
       slug,
       summary: summary || null,
-      contentMd,
+      content,
       images: Array.isArray(images) ? images : [],
     },
   });
