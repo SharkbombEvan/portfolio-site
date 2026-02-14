@@ -18,7 +18,6 @@ export async function POST(req: Request) {
       slug,
       summary: summary || null,
       content,
-      images: Array.isArray(images) ? images : [],
     },
   });
 
