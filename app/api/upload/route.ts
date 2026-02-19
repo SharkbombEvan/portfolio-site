@@ -12,7 +12,10 @@ export async function POST(req: Request) {
   name: !!process.env.CLOUDINARY_CLOUD_NAME,
   key: !!process.env.CLOUDINARY_API_KEY,
   secret: !!process.env.CLOUDINARY_API_SECRET,
+  
 });
+
+
 
     if (!file || !(file instanceof File)) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -24,8 +27,14 @@ export async function POST(req: Request) {
       const stream = cloudinary.uploader.upload_stream(
         { folder: "portfolio" },
         (err, result) => {
-          if (err) return reject(err);
-          if (!result?.secure_url) return reject(new Error("No secure_url returned"));
+  if (err) {
+    console.error("CLOUDINARY STREAM ERROR:", err);
+    return reject(err);
+  }
+  if (!result?.secure_url) {
+    console.error("CLOUDINARY NO URL:", result);
+    return reject(new Error("No secure_url returned"));
+  }
           const optimizedUrl = result.secure_url.replace(
   "/upload/",
   "/upload/w_1200,q_auto,f_auto/"

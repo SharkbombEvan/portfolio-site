@@ -1,50 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import MDEditor from "@uiw/react-md-editor";
+import ProjectImagesField from "@/components/admin/ProjectImagesField";
+import { useRouter } from "next/navigation";
+
+type Img = { url: string; alt?: string };
 
 export default function NewProjectPage() {
+  const router = useRouter();
+
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [summary, setSummary] = useState("");
   const [contentMd, setContentMd] = useState<string>("");
+  const [tech, setTech] = useState("");
+  const [coverImage, setCoverImage] = useState("");
+  const [demoUrl, setDemoUrl] = useState("");
+  const [repoUrl, setRepoUrl] = useState("");
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
 
-  const [images, setImages] = useState<string[]>([]);
-  const [uploading, setUploading] = useState(false);
+  const [images, setImages] = useState<Img[]>([]);
+  const imagesInputRef = useRef<HTMLInputElement | null>(null);
+
   const [saving, setSaving] = useState(false);
 
-  async function uploadImage(file: File) {
-    setUploading(true);
-    try {
-      const fd = new FormData();
-      fd.append("file", file);
-
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Upload failed");
-
-      setImages((prev) => [...prev, data.url]);
-
-      // Optional: auto-insert into markdown at the end
-      setContentMd((prev) => `${prev}\n\n![${file.name}](${data.url})\n`);
-    } finally {
-      setUploading(false);
+  useEffect(() => {
+    if (imagesInputRef.current) {
+      imagesInputRef.current.value = JSON.stringify(images);
     }
-  }
+  }, [images]);
 
   async function saveProject() {
     setSaving(true);
     try {
-      const res = await fetch("/api/admin/projects", {
+      const res = await fetch("/api/admin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, slug, summary, contentMd, images }),
+        body: JSON.stringify({
+          title,
+          slug,
+          summary,
+          contentMd,
+          tech: tech.split(",").map((s) => s.trim()).filter(Boolean),
+          coverImage: coverImage || null,
+          demoUrl: demoUrl || null,
+          repoUrl: repoUrl || null,
+          images,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Save failed");
 
-      alert("Saved!");
-      // optionally redirect to edit page
+      router.push("/admin");
     } finally {
       setSaving(false);
     }
@@ -60,22 +68,25 @@ export default function NewProjectPage() {
         onChange={(e) => {
           const t = e.target.value;
           setTitle(t);
-          setSlug(
-            slug ||
-              t
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, "-")
-                .replace(/(^-|-$)/g, "")
-          );
+          if (!slugManuallyEdited) {
+            setSlug(
+              t.toLowerCase()
+              .replace(/[^a-z0-9]+/g, "-")
+              .replace(/(^-|-$)/g, "")
+            );
+          }
         }}
+
         style={{ display: "block", width: "100%", marginBottom: 12 }}
       />
 
       <label>Slug</label>
       <input
         value={slug}
-        onChange={(e) => setSlug(e.target.value)}
-        style={{ display: "block", width: "100%", marginBottom: 12 }}
+        onChange={(e) => {
+        setSlugManuallyEdited(true);
+         setSlug(e.target.value);
+}}
       />
 
       <label>Summary</label>
@@ -85,32 +96,47 @@ export default function NewProjectPage() {
         style={{ display: "block", width: "100%", marginBottom: 12 }}
       />
 
-      <div style={{ margin: "16px 0" }}>
-        <label>Upload image</label>
-        <input
-          type="file"
-          accept="image/*"
-          disabled={uploading}
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) uploadImage(f);
-          }}
-        />
-        {uploading && <p>Uploading…</p>}
+      <label>Tech (comma-separated)</label>
+      <input
+        value={tech}
+        onChange={(e) => setTech(e.target.value)}
+        placeholder="React, TypeScript, Prisma"
+        style={{ display: "block", width: "100%", marginBottom: 12 }}
+      />
+
+      <label>Cover Image URL</label>
+      <input
+        value={coverImage}
+        onChange={(e) => setCoverImage(e.target.value)}
+        placeholder="https://..."
+        style={{ display: "block", width: "100%", marginBottom: 12 }}
+      />
+
+      <label>Demo URL</label>
+      <input
+        value={demoUrl}
+        onChange={(e) => setDemoUrl(e.target.value)}
+        placeholder="https://..."
+        style={{ display: "block", width: "100%", marginBottom: 12 }}
+      />
+
+      <label>Repo URL</label>
+      <input
+        value={repoUrl}
+        onChange={(e) => setRepoUrl(e.target.value)}
+        placeholder="https://github.com/..."
+        style={{ display: "block", width: "100%", marginBottom: 12 }}
+      />
+
+      <div style={{ marginTop: 16, marginBottom: 16 }}>
+        <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>Gallery Images</h3>
+        <ProjectImagesField value={images} onChange={setImages} />
       </div>
 
-      <div data-color-mode="light">
+      <div data-color-mode="light" style={{ marginBottom: 16 }}>
+        <label>Content</label>
         <MDEditor value={contentMd} onChange={(v) => setContentMd(v || "")} />
       </div>
-
-      <h3>Images</h3>
-      <ul>
-        {images.map((url) => (
-          <li key={url}>
-            <a href={url} target="_blank" rel="noreferrer">{url}</a>
-          </li>
-        ))}
-      </ul>
 
       <button disabled={saving} onClick={saveProject}>
         {saving ? "Saving…" : "Save Project"}

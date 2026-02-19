@@ -16,6 +16,11 @@ export default function DeleteButton({ id }: { id: string }) {
         ? await res.json()
         : await res.text();
 
+        if (!id) {
+         alert("DeleteButton received no id");
+        return;
+}
+
       if (!res.ok) {
         console.error("Delete failed:", res.status, body);
         alert(

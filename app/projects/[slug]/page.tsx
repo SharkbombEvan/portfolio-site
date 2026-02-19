@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import ImageCarousel from "@/components/ImageCarousel";
 
 export default async function ProjectPage({
   params,
@@ -13,6 +14,11 @@ export default async function ProjectPage({
 
   const project = await prisma.project.findUnique({
     where: { slug },
+    include: {
+      images: {
+        orderBy: { order: "asc" },
+      },
+    },
   });
 
   if (!project) return notFound();
@@ -24,7 +30,10 @@ export default async function ProjectPage({
       <h1 style={{ marginTop: 16 }}>{project.title}</h1>
       <p style={{ opacity: 0.8 }}>{project.summary}</p>
 
-      {project.coverImage ? (
+      {/* Show the carousel if there are gallery images, otherwise fall back to coverImage */}
+      {project.images.length > 0 ? (
+        <ImageCarousel images={project.images} />
+      ) : project.coverImage ? (
         <img
           src={project.coverImage}
           alt={`${project.title} cover`}
