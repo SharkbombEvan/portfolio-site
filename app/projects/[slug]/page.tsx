@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import ImageCarousel from "@/components/ImageCarousel";
+import ImageGallery from "@/components/ImageGallery";
+
 
 export default async function ProjectPage({
   params,
@@ -32,7 +33,7 @@ export default async function ProjectPage({
 
       {/* Show the carousel if there are gallery images, otherwise fall back to coverImage */}
       {project.images.length > 0 ? (
-        <ImageCarousel images={project.images} />
+        <ImageGallery images={project.images} />
       ) : project.coverImage ? (
         <img
           src={project.coverImage}
