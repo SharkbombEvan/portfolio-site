@@ -56,15 +56,15 @@ export default function AboutPage() {
           </div>
           <div>
             {/* REPLACE THIS PARAGRAPH WITH YOUR BIO */}
-            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#333", marginBottom: 24, fontStyle: "italic", color: "#aaa" }}>
+            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#aaa", marginBottom: 24, fontStyle: "italic" }}>
               [Your introduction here — who you are, how you got into audio engineering, and what drives your work.]
             </p>
             {/* REPLACE THIS PARAGRAPH WITH MORE OF YOUR STORY */}
-            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#333", marginBottom: 24, fontStyle: "italic", color: "#aaa" }}>
+            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#aaa", marginBottom: 24, fontStyle: "italic" }}>
               [Tell the story of Sharkbomb Audio — when it started, what kinds of projects you take on, and what makes your approach different.]
             </p>
             {/* REPLACE THIS PARAGRAPH WITH YOUR PHILOSOPHY */}
-            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#333", fontStyle: "italic", color: "#aaa" }}>
+            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#333", fontStyle: "italic" }}>
               [Your philosophy on audio equipment, craftsmanship, or engineering — something that gives visitors a sense of your values and approach.]
             </p>
           </div>
