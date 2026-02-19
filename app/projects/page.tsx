@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-
+export const revalidate = 0;
 export default async function ProjectsPage() {
   const projects = await prisma.project.findMany({
     orderBy: { createdAt: "desc" },

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import DeleteButton from "./DeleteButton";
-
+export const revalidate = 0;
 export default async function AdminPage() {
   const projects = await prisma.project.findMany({
     orderBy: { createdAt: "desc" },
