@@ -105,21 +105,36 @@ export default function ContactPage() {
                 </a>
               </div>
 
-              {/* Instagram placeholder — uncomment and add URL when ready:
+              {
               <div style={{ borderTop: "1px solid #ddd", paddingTop: 24 }}>
                 <p style={{ fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#888", marginBottom: 12 }}>
                   Instagram
                 </p>
                 <a
-                  href="https://instagram.com/yourusername"
+                  href="https://instagram.com/SharkbombAudio"
                   target="_blank"
                   rel="noreferrer"
                   style={{ fontSize: 18, color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: 2 }}
                 >
-                  instagram.com/yourusername
+                  instagram.com/SharkbombAudio
                 </a>
               </div>
-              */}
+              }
+
+                            {/* REVERB */}
+              <div style={{ borderTop: "1px solid #ddd", paddingTop: 24 }}>
+                <p style={{ fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#888", marginBottom: 12 }}>
+                  Reverb Shop
+                </p>
+                <a
+                  href="https://reverb.com/shop/evans-shop-698y"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ fontSize: 18, color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: 2 }}
+                >
+                  https://reverb.com/shop/evans-shop-698
+                </a>
+              </div>
 
             </div>
           </div>

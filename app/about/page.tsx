@@ -56,16 +56,20 @@ export default function AboutPage() {
           </div>
           <div>
             {/* REPLACE THIS PARAGRAPH WITH YOUR BIO */}
-            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#aaa", marginBottom: 24, fontStyle: "italic" }}>
-              [Your introduction here — who you are, how you got into audio engineering, and what drives your work.]
+            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#333", marginBottom: 24}}>
+              My name is Evan Demsey. I am currently an electrical engineering student at the University of Virginia. I got into electrical engineering and audio equipment design in 2020, when I learned about the mythical “Klon Centaur” pedal. I learned some of the basics of pedal building and audio design, and the rest followed after.
             </p>
             {/* REPLACE THIS PARAGRAPH WITH MORE OF YOUR STORY */}
-            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#aaa", marginBottom: 24, fontStyle: "italic" }}>
-              [Tell the story of Sharkbomb Audio — when it started, what kinds of projects you take on, and what makes your approach different.]
+            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#333", marginBottom: 24 }}>
+              I officially started branding my work under the name Sharkbomb Audio once I knew that this was a hobby I wanted to pursue. I started off making pedals for myself to mimic the sound of some of my favorite guitarists. I eventually started selling pedals to friends and accepting repair jobs from both friends and local used music stores. 
+
+              My journey stepped up to the next level in 2023, when I reached out to Paul of Paul Reed Smith guitars, who accepted me as an intern. During my internship at PRS, I built, modified, and designed several pieces of equipment for Paul’s personal studio, as well as assisted with amplifier repairs in the factory. 
             </p>
             {/* REPLACE THIS PARAGRAPH WITH YOUR PHILOSOPHY */}
-            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#333", fontStyle: "italic" }}>
-              [Your philosophy on audio equipment, craftsmanship, or engineering — something that gives visitors a sense of your values and approach.]
+            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#333"}}>
+              Now I am primarily a student; however, I still build guitar pedals in my lab space and on breaks when I go home. I love learning new skills to inform my designs and working on new projects. 
+
+              I believe that a better understanding on what your pedal is doing internally allows you to better connect with your gear. If you ever have questions on how my gear works, feel free to reach out!
             </p>
           </div>
         </div>
@@ -81,7 +85,7 @@ export default function AboutPage() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
             {[
-              { title: "Custom Builds", desc: "Designing audio equipment from the ground up — amplifiers, preamps, and more." },
+              { title: "Custom Builds", desc: "Making your original equipment dreams come true! Building amplifiers, effects, and more from the ground up." },
               { title: "Modifications", desc: "Upgrading and modifying existing equipment to improve performance and tone." },
               { title: "Repair & Restoration", desc: "Bringing vintage and modern audio gear back to life." },
               { title: "Circuit Design", desc: "Analog and mixed-signal circuit design for audio applications." },
@@ -107,7 +111,7 @@ export default function AboutPage() {
           </div>
           <div>
             <p style={{ fontSize: 15, lineHeight: 1.8, color: "#444", marginBottom: 32 }}>
-              Interested in a custom build, modification, or repair? Get in touch.
+              Interested in a custom build, modification, or repair? I'd love to chat! Get in touch.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <a
