@@ -35,7 +35,6 @@ async function updateProject(id: string, formData: FormData) {
       slug: (formData.get("slug") as string) ?? "",
       summary: (formData.get("summary") as string) || "",
       content: (formData.get("content") as string) || null,
-      isProduct: formData.get("isProduct") === "true",
       // Keep these since you already have them in your model update:
       isProduct: formData.get("isProduct") === "true",
       coverImage: (formData.get("coverImage") as string) || null,
