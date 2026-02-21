@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ImageGallery from "@/components/ImageGallery";
-
+import ReactMarkdown from "react-markdown";
 
 export default async function ProjectPage({
   params,
@@ -63,7 +63,7 @@ export default async function ProjectPage({
       <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
         {project.demoUrl ? (
           <a href={project.demoUrl} target="_blank" rel="noreferrer">
-            Live Demo
+            Demo Video
           </a>
         ) : null}
         {project.repoUrl ? (
@@ -75,13 +75,13 @@ export default async function ProjectPage({
 
       <hr style={{ margin: "24px 0" }} />
 
-      {project.content ? (
-        <article style={{ whiteSpace: "pre-wrap", lineHeight: 1.7 }}>
-          {project.content}
-        </article>
-      ) : (
-        <p style={{ opacity: 0.7 }}>No content yet.</p>
-      )}
+{project.content ? (
+  <article style={{ lineHeight: 1.7, maxWidth: 700 }}>
+    <ReactMarkdown>{project.content}</ReactMarkdown>
+  </article>
+) : (
+  <p style={{ opacity: 0.7 }}>No content yet.</p>
+)}
     </main>
   );
 }

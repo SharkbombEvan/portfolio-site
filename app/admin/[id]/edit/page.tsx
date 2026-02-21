@@ -35,8 +35,9 @@ async function updateProject(id: string, formData: FormData) {
       slug: (formData.get("slug") as string) ?? "",
       summary: (formData.get("summary") as string) || "",
       content: (formData.get("content") as string) || null,
-
+      isProduct: formData.get("isProduct") === "true",
       // Keep these since you already have them in your model update:
+      isProduct: formData.get("isProduct") === "true",
       coverImage: (formData.get("coverImage") as string) || null,
       demoUrl: (formData.get("demoUrl") as string) || null,
       repoUrl: (formData.get("repoUrl") as string) || null,
@@ -89,6 +90,7 @@ export default async function EditProjectPage({
           coverImage: project.coverImage ?? "",
           demoUrl: project.demoUrl ?? "",
           repoUrl: project.repoUrl ?? "",
+          isProduct: project.isProduct ?? false,
           images: project.images.map((img) => ({ url: img.url, alt: img.alt ?? undefined })),
         }}
         action={action}

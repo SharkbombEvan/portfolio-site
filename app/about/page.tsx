@@ -20,13 +20,12 @@ export default function AboutPage() {
           SHARKBOMB AUDIO
         </Link>
         <div style={{ display: "flex", gap: 32, fontSize: 14, letterSpacing: "0.08em" }}>
-          <div style={{ display: "flex", gap: 32, fontSize: 14, letterSpacing: "0.08em" }}>
   <Link href="/" style={{ textDecoration: "none", color: "#1a1a1a" }}>HOME</Link>
   <Link href="/projects" style={{ textDecoration: "none", color: "#1a1a1a" }}>PROJECTS</Link>
-  <Link href="/about" style={{ textDecoration: "none", color: "#1a1a1a" }}>ABOUT</Link>
-  <Link href="/contact" style={{ textDecoration: "none", color: "#1a1a1a" }}>CONTACT</Link>
+  <Link href="/products" style={{ textDecoration: "none", color: "#1a1a1a" }}>PRODUCTS</Link>
+  <Link href="/about" style={{ textDecoration: "none", color: "#1a1a1a", borderBottom: "1px solid #1a1a1a", paddingBottom: 2 }}>ABOUT</Link>
+    <Link href="/contact" style={{ textDecoration: "none", color: "#1a1a1a" }}>CONTACT</Link>
 </div>
-        </div>
       </nav>
 
       {/* HEADER */}

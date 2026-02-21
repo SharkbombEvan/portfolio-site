@@ -19,6 +19,7 @@ export default function EditProjectForm({
     coverImage: string;
     demoUrl: string;
     repoUrl: string;
+    isProduct: boolean;
     images: Img[];
   };
   action: (formData: FormData) => Promise<void>;
@@ -26,7 +27,6 @@ export default function EditProjectForm({
   const initialImages = useMemo(() => project.images ?? [], [project.images]);
   const [images, setImages] = useState<Img[]>(initialImages);
 
-  // Hidden input that gets submitted with the form
   const imagesInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -66,6 +66,16 @@ export default function EditProjectForm({
       <label>
         Repo URL{" "}
         <input name="repoUrl" defaultValue={project.repoUrl || ""} placeholder="https://..." />
+      </label>
+
+      <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <input
+          type="checkbox"
+          name="isProduct"
+          defaultChecked={project.isProduct}
+          value="true"
+        />
+        List as a Product
       </label>
 
       {/* Hidden JSON field that carries the gallery images to the server action */}

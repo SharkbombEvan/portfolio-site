@@ -28,12 +28,11 @@ export default async function ProjectsPage() {
           SHARKBOMB AUDIO
         </Link>
         <div style={{ display: "flex", gap: 32, fontSize: 14, letterSpacing: "0.08em" }}>
-          <div style={{ display: "flex", gap: 32, fontSize: 14, letterSpacing: "0.08em" }}>
-  <Link href="/" style={{ textDecoration: "none", color: "#1a1a1a" }}>HOME</Link>
-  <Link href="/projects" style={{ textDecoration: "none", color: "#1a1a1a" }}>PROJECTS</Link>
-  <Link href="/about" style={{ textDecoration: "none", color: "#1a1a1a" }}>ABOUT</Link>
-  <Link href="/contact" style={{ textDecoration: "none", color: "#1a1a1a" }}>CONTACT</Link>
-</div>
+          <Link href="/" style={{ textDecoration: "none", color: "#1a1a1a" }}>HOME</Link>
+          <Link href="/projects" style={{ textDecoration: "none", color: "#1a1a1a", borderBottom: "1px solid #1a1a1a", paddingBottom: 2 }}>PROJECTS</Link>
+          <Link href="/products" style={{ textDecoration: "none", color: "#1a1a1a" }}>PRODUCTS</Link>
+          <Link href="/about" style={{ textDecoration: "none", color: "#1a1a1a" }}>ABOUT</Link>
+          <Link href="/contact" style={{ textDecoration: "none", color: "#1a1a1a" }}>CONTACT</Link>
         </div>
       </nav>
 
@@ -59,7 +58,7 @@ export default async function ProjectsPage() {
         {projects.length === 0 ? (
           <p style={{ color: "#888", fontStyle: "italic" }}>No projects yet.</p>
         ) : (
-          <div style={{ display: "grid", gap: 64 }}>
+          <div style={{ display: "grid", gap: 0 }}>
             {projects.map((project, i) => {
               const thumb = project.images[0]?.url ?? project.coverImage;
               return (
@@ -74,6 +73,7 @@ export default async function ProjectsPage() {
                     gap: 40,
                     alignItems: "center",
                     paddingBottom: 64,
+                    paddingTop: i === 0 ? 0 : 64,
                     borderBottom: "1px solid #ddd",
                   }}
                 >
@@ -91,9 +91,23 @@ export default async function ProjectsPage() {
                     />
                   )}
                   <div style={{ order: i % 2 === 0 ? 1 : 0 }}>
-                    <p style={{ fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#888", marginBottom: 12 }}>
-                      {String(i + 1).padStart(2, "0")}
-                    </p>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+                      <p style={{ fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#888", margin: 0 }}>
+                        {String(i + 1).padStart(2, "0")}
+                      </p>
+                      {project.isProduct && (
+                        <span style={{
+                          fontSize: 10,
+                          letterSpacing: "0.12em",
+                          textTransform: "uppercase",
+                          color: "#f8f6f1",
+                          background: "#1a1a1a",
+                          padding: "3px 8px",
+                        }}>
+                          Product
+                        </span>
+                      )}
+                    </div>
                     <h2 style={{ fontSize: 28, fontWeight: "normal", marginBottom: 12, fontFamily: "'Georgia', serif" }}>
                       {project.title}
                     </h2>

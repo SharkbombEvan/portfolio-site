@@ -17,6 +17,7 @@ model Project {
   coverImage String?
   demoUrl    String?
   repoUrl    String?
+  isProduct  Boolean        @default(false)   // ADD THIS LINE
   images     ProjectImage[]
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt

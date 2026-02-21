@@ -9,7 +9,7 @@ type Img = { url: string; alt?: string };
 
 export default function NewProjectPage() {
   const router = useRouter();
-
+  const [isProduct, setIsProduct] = useState(false);
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [summary, setSummary] = useState("");
@@ -38,16 +38,17 @@ export default function NewProjectPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title,
-          slug,
-          summary,
-          contentMd,
-          tech: tech.split(",").map((s) => s.trim()).filter(Boolean),
-          coverImage: coverImage || null,
-          demoUrl: demoUrl || null,
-          repoUrl: repoUrl || null,
-          images,
-        }),
+  title,
+  slug,
+  summary,
+  contentMd,
+  tech: tech.split(",").map((s) => s.trim()).filter(Boolean),
+  coverImage: coverImage || null,
+  demoUrl: demoUrl || null,
+  repoUrl: repoUrl || null,
+  isProduct,   // ADD THIS
+  images,
+}),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Save failed");
@@ -127,6 +128,15 @@ export default function NewProjectPage() {
         placeholder="https://github.com/..."
         style={{ display: "block", width: "100%", marginBottom: 12 }}
       />
+
+      <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+  <input
+    type="checkbox"
+    checked={isProduct}
+    onChange={(e) => setIsProduct(e.target.checked)}
+  />
+  List as a Product
+</label>
 
       <div style={{ marginTop: 16, marginBottom: 16 }}>
         <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>Gallery Images</h3>
