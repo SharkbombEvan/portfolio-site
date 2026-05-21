@@ -18,6 +18,7 @@ export default function NewProjectPage() {
   const [coverImage, setCoverImage] = useState("");
   const [demoUrl, setDemoUrl] = useState("");
   const [repoUrl, setRepoUrl] = useState("");
+  const [shopUrl, setShopUrl] = useState("");
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
 
   const [images, setImages] = useState<Img[]>([]);
@@ -46,7 +47,8 @@ export default function NewProjectPage() {
   coverImage: coverImage || null,
   demoUrl: demoUrl || null,
   repoUrl: repoUrl || null,
-  isProduct,   // ADD THIS
+  shopUrl: shopUrl || null,
+  isProduct,
   images,
 }),
       });
@@ -126,6 +128,14 @@ export default function NewProjectPage() {
         value={repoUrl}
         onChange={(e) => setRepoUrl(e.target.value)}
         placeholder="https://github.com/..."
+        style={{ display: "block", width: "100%", marginBottom: 12 }}
+      />
+
+      <label>Shop URL (Reverb)</label>
+      <input
+        value={shopUrl}
+        onChange={(e) => setShopUrl(e.target.value)}
+        placeholder="https://reverb.com/item/..."
         style={{ display: "block", width: "100%", marginBottom: 12 }}
       />
 

@@ -40,6 +40,7 @@ async function updateProject(id: string, formData: FormData) {
       coverImage: (formData.get("coverImage") as string) || null,
       demoUrl: (formData.get("demoUrl") as string) || null,
       repoUrl: (formData.get("repoUrl") as string) || null,
+      shopUrl: (formData.get("shopUrl") as string) || null,
 
       tech,
 
@@ -89,6 +90,7 @@ export default async function EditProjectPage({
           coverImage: project.coverImage ?? "",
           demoUrl: project.demoUrl ?? "",
           repoUrl: project.repoUrl ?? "",
+          shopUrl: project.shopUrl ?? "",
           isProduct: project.isProduct ?? false,
           images: project.images.map((img) => ({ url: img.url, alt: img.alt ?? undefined })),
         }}

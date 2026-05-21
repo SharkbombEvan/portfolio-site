@@ -128,12 +128,12 @@ export default function ContactPage() {
                   Reverb Shop
                 </p>
                 <a
-                  href="https://reverb.com/shop/evans-shop-698y"
+                  href="https://reverb.com/shop/sharkbombaudio"
                   target="_blank"
                   rel="noreferrer"
                   style={{ fontSize: 18, color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: 2 }}
                 >
-                  https://reverb.com/shop/evans-shop-698
+                  https://reverb.com/shop/sharkbombaudio
                 </a>
               </div>
 
