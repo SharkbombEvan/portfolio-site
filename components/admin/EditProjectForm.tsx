@@ -1,9 +1,30 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import MDEditor from "@uiw/react-md-editor";
 import ProjectImagesField from "@/components/admin/ProjectImagesField";
 
 type Img = { url: string; alt?: string };
+
+const fieldStyle: React.CSSProperties = { marginBottom: 20 };
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  fontWeight: 600,
+  fontSize: 13,
+  marginBottom: 4,
+  textTransform: "uppercase",
+  letterSpacing: "0.05em",
+};
+const inputStyle: React.CSSProperties = {
+  display: "block",
+  width: "100%",
+  boxSizing: "border-box",
+  padding: "8px 10px",
+  border: "1px solid #ccc",
+  fontSize: 14,
+  fontFamily: "inherit",
+};
+const textareaStyle: React.CSSProperties = { ...inputStyle, resize: "vertical" };
 
 export default function EditProjectForm({
   project,
@@ -25,10 +46,11 @@ export default function EditProjectForm({
   };
   action: (formData: FormData) => Promise<void>;
 }) {
-  const initialImages = useMemo(() => project.images ?? [], [project.images]);
-  const [images, setImages] = useState<Img[]>(initialImages);
+  const [images, setImages] = useState<Img[]>(project.images ?? []);
+  const [contentMd, setContentMd] = useState(project.content ?? "");
 
   const imagesInputRef = useRef<HTMLInputElement | null>(null);
+  const contentInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (imagesInputRef.current) {
@@ -36,67 +58,85 @@ export default function EditProjectForm({
     }
   }, [images]);
 
+  useEffect(() => {
+    if (contentInputRef.current) {
+      contentInputRef.current.value = contentMd;
+    }
+  }, [contentMd]);
+
   return (
-    <form action={action} style={{ display: "grid", gap: 12, marginTop: 16 }}>
-      <label>
-        Title <input name="title" defaultValue={project.title} required />
-      </label>
+    <form action={action} style={{ marginTop: 16 }}>
 
-      <label>
-        Slug <input name="slug" defaultValue={project.slug} required />
-      </label>
+      <div style={fieldStyle}>
+        <label style={labelStyle}>Title</label>
+        <input name="title" defaultValue={project.title} required style={inputStyle} />
+      </div>
 
-      <label>
-        Summary <textarea name="summary" defaultValue={project.summary} rows={3} />
-      </label>
+      <div style={fieldStyle}>
+        <label style={labelStyle}>Slug</label>
+        <input name="slug" defaultValue={project.slug} required style={inputStyle} />
+      </div>
 
-      <label>
-        Tech <input name="tech" defaultValue={(project.tech || []).join(", ")} />
-      </label>
+      <div style={fieldStyle}>
+        <label style={labelStyle}>Summary</label>
+        <textarea name="summary" defaultValue={project.summary} rows={3} style={textareaStyle} />
+      </div>
 
-      <label>
-        Cover Image URL{" "}
-        <input name="coverImage" defaultValue={project.coverImage || ""} placeholder="https://..." />
-      </label>
+      <div style={fieldStyle}>
+        <label style={labelStyle}>Tech (comma-separated)</label>
+        <input name="tech" defaultValue={(project.tech || []).join(", ")} style={inputStyle} />
+      </div>
 
-      <label>
-        Demo URL{" "}
-        <input name="demoUrl" defaultValue={project.demoUrl || ""} placeholder="https://..." />
-      </label>
+      <div style={fieldStyle}>
+        <label style={labelStyle}>Cover Image URL</label>
+        <input name="coverImage" defaultValue={project.coverImage || ""} placeholder="https://..." style={inputStyle} />
+      </div>
 
-      <label>
-        Repo URL{" "}
-        <input name="repoUrl" defaultValue={project.repoUrl || ""} placeholder="https://github.com/..." />
-      </label>
+      <div style={fieldStyle}>
+        <label style={labelStyle}>Demo URL (YouTube)</label>
+        <input name="demoUrl" defaultValue={project.demoUrl || ""} placeholder="https://youtube.com/watch?v=..." style={inputStyle} />
+      </div>
 
-      <label>
-        Shop URL (Reverb){" "}
-        <input name="shopUrl" defaultValue={project.shopUrl || ""} placeholder="https://reverb.com/item/..." />
-      </label>
+      <div style={fieldStyle}>
+        <label style={labelStyle}>Repo URL</label>
+        <input name="repoUrl" defaultValue={project.repoUrl || ""} placeholder="https://github.com/..." style={inputStyle} />
+      </div>
 
-      <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <input
-          type="checkbox"
-          name="isProduct"
-          defaultChecked={project.isProduct}
-          value="true"
-        />
-        List as a Product
-      </label>
+      <div style={fieldStyle}>
+        <label style={labelStyle}>Shop URL (Reverb)</label>
+        <input name="shopUrl" defaultValue={project.shopUrl || ""} placeholder="https://reverb.com/item/..." style={inputStyle} />
+      </div>
 
-      {/* Hidden JSON field that carries the gallery images to the server action */}
+      <div style={{ marginBottom: 20 }}>
+        <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+          <input type="checkbox" name="isProduct" defaultChecked={project.isProduct} value="true" />
+          <span style={{ fontWeight: 600, fontSize: 13 }}>List as a Product</span>
+        </label>
+      </div>
+
+      {/* Hidden inputs synced from controlled state */}
       <input ref={imagesInputRef} type="hidden" name="images" defaultValue={JSON.stringify(images)} />
+      <input ref={contentInputRef} type="hidden" name="content" defaultValue={project.content ?? ""} />
 
-      <div style={{ marginTop: 8 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>Gallery Images</h3>
+      <div style={{ marginBottom: 24 }}>
+        <p style={labelStyle}>Gallery Images</p>
         <ProjectImagesField value={images} onChange={setImages} />
       </div>
 
-      <label>
-        Content <textarea name="content" defaultValue={project.content ?? ""} rows={12} />
-      </label>
+      <div style={{ marginBottom: 24 }}>
+        <p style={labelStyle}>Content</p>
+        <div data-color-mode="light">
+          <MDEditor
+            value={contentMd}
+            onChange={(v) => setContentMd(v ?? "")}
+            height={500}
+          />
+        </div>
+      </div>
 
-      <button type="submit">Save</button>
+      <button type="submit" style={{ padding: "10px 24px", fontSize: 14, cursor: "pointer" }}>
+        Save Changes
+      </button>
     </form>
   );
 }
