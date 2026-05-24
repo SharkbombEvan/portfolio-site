@@ -1,35 +1,14 @@
 import Link from "next/link";
+import MobileNav from "@/components/MobileNav";
 
 export default function AboutPage() {
   return (
     <main style={{ fontFamily: "'Georgia', serif", background: "#f8f6f1", minHeight: "100vh", color: "#1a1a1a" }}>
 
-      {/* NAV */}
-      <nav style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "24px 48px",
-        borderBottom: "1px solid #ddd",
-        background: "#f8f6f1",
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-      }}>
-        <Link href="/" style={{ fontFamily: "'Georgia', serif", fontWeight: "bold", fontSize: 18, letterSpacing: "0.05em", textDecoration: "none", color: "#1a1a1a" }}>
-          SHARKBOMB AUDIO
-        </Link>
-        <div style={{ display: "flex", gap: 32, fontSize: 14, letterSpacing: "0.08em" }}>
-  <Link href="/" style={{ textDecoration: "none", color: "#1a1a1a" }}>HOME</Link>
-  <Link href="/projects" style={{ textDecoration: "none", color: "#1a1a1a" }}>PROJECTS</Link>
-  <Link href="/products" style={{ textDecoration: "none", color: "#1a1a1a" }}>PRODUCTS</Link>
-  <Link href="/about" style={{ textDecoration: "none", color: "#1a1a1a", borderBottom: "1px solid #1a1a1a", paddingBottom: 2 }}>ABOUT</Link>
-    <Link href="/contact" style={{ textDecoration: "none", color: "#1a1a1a" }}>CONTACT</Link>
-</div>
-      </nav>
+      <MobileNav activePage="/about" />
 
       {/* HEADER */}
-      <section style={{ padding: "80px 48px 64px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
+      <section className="mobile-pad" style={{ padding: "80px 48px 64px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
         <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: 24 }}>
           About
         </p>
@@ -46,8 +25,8 @@ export default function AboutPage() {
       </section>
 
       {/* BIO SECTION */}
-      <section style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 64, alignItems: "start" }}>
+      <section className="mobile-pad" style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
+        <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 64, alignItems: "start" }}>
           <div>
             <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: 0 }}>
               Background
@@ -75,14 +54,14 @@ export default function AboutPage() {
       </section>
 
       {/* CAPABILITIES */}
-      <section style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 64, alignItems: "start" }}>
+      <section className="mobile-pad" style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
+        <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 64, alignItems: "start" }}>
           <div>
             <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888" }}>
               Capabilities
             </p>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
+          <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
             {[
               { title: "Custom Builds", desc: "Making your original equipment dreams come true! Building amplifiers, effects, and more from the ground up." },
               { title: "Modifications", desc: "Upgrading and modifying existing equipment to improve performance and tone." },
@@ -101,8 +80,8 @@ export default function AboutPage() {
       </section>
 
       {/* CONTACT */}
-      <section style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 64, alignItems: "start" }}>
+      <section className="mobile-pad" style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto" }}>
+        <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 64, alignItems: "start" }}>
           <div>
             <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888" }}>
               Contact
@@ -153,7 +132,7 @@ export default function AboutPage() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ borderTop: "1px solid #ddd", padding: "24px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "#aaa", letterSpacing: "0.08em" }}>
+      <footer className="mobile-footer" style={{ borderTop: "1px solid #ddd", padding: "24px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "#aaa", letterSpacing: "0.08em" }}>
         <span>© {new Date().getFullYear()} SHARKBOMB AUDIO</span>
         <span>ELECTRICAL ENGINEERING · AUDIO EQUIPMENT</span>
       </footer>

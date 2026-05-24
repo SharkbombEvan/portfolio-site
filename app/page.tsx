@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import MobileNav from "@/components/MobileNav";
 
 export const revalidate = 0;
 
@@ -13,34 +14,10 @@ export default async function HomePage() {
   return (
     <main style={{ fontFamily: "'Georgia', serif", background: "#f8f6f1", minHeight: "100vh", color: "#1a1a1a" }}>
 
-      {/* NAV */}
-      <nav style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "24px 48px",
-        borderBottom: "1px solid #ddd",
-        background: "#f8f6f1",
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-      }}>
-        <span style={{ fontFamily: "'Georgia', serif", fontWeight: "bold", fontSize: 18, letterSpacing: "0.05em" }}>
-          SHARKBOMB AUDIO
-        </span>
-        <div style={{ display: "flex", gap: 32, fontSize: 14, letterSpacing: "0.08em" }}>
-<div style={{ display: "flex", gap: 32, fontSize: 14, letterSpacing: "0.08em" }}>
-  <Link href="/" style={{ textDecoration: "none", color: "#1a1a1a",  }}>HOME</Link>
-  <Link href="/projects" style={{ textDecoration: "none", color: "#1a1a1a" }}>PROJECTS</Link>
-  <Link href="/products" style={{ textDecoration: "none", color: "#1a1a1a" }}>PRODUCTS</Link>
-  <Link href="/about" style={{ textDecoration: "none", color: "#1a1a1a" }}>ABOUT</Link>
-  <Link href="/contact" style={{ textDecoration: "none", color: "#1a1a1a" }}>CONTACT</Link>
-</div>
-        </div>
-      </nav>
+      <MobileNav activePage="/" />
 
       {/* HERO */}
-      <section style={{
+      <section className="mobile-pad" style={{
         padding: "120px 48px 100px",
         maxWidth: 900,
         margin: "0 auto",
@@ -91,7 +68,7 @@ export default async function HomePage() {
       </section>
 
       {/* FEATURED PROJECTS */}
-      <section style={{ padding: "80px 48px", maxWidth: 1100, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
+      <section className="mobile-pad" style={{ padding: "80px 48px", maxWidth: 1100, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
         <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: 48 }}>
           Featured Work
         </p>
@@ -171,7 +148,7 @@ export default async function HomePage() {
       </section>
 
       {/* SKILLS */}
-      <section style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
+      <section className="mobile-pad" style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
         <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: 48 }}>
           Capabilities
         </p>
@@ -193,11 +170,11 @@ export default async function HomePage() {
       </section>
 
       {/* ABOUT BLURB */}
-      <section style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
+      <section className="mobile-pad" style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
         <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: 48 }}>
           About
         </p>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "start" }}>
+        <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "start" }}>
           <h2 style={{ fontSize: "clamp(28px, 4vw, 40px)", fontWeight: "normal", fontFamily: "'Georgia', serif", lineHeight: 1.2, margin: 0 }}>
             Precision engineering<br />
             <em>for serious sound.</em>
@@ -217,7 +194,7 @@ export default async function HomePage() {
       </section>
 
       {/* CONTACT */}
-      <section style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto" }}>
+      <section className="mobile-pad" style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto" }}>
         <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: 48 }}>
           Get In Touch
         </p>
@@ -258,7 +235,7 @@ export default async function HomePage() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ borderTop: "1px solid #ddd", padding: "24px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "#aaa", letterSpacing: "0.08em" }}>
+      <footer className="mobile-footer" style={{ borderTop: "1px solid #ddd", padding: "24px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "#aaa", letterSpacing: "0.08em" }}>
         <span>© {new Date().getFullYear()} SHARKBOMB AUDIO</span>
         <span>ELECTRICAL ENGINEERING · AUDIO EQUIPMENT</span>
       </footer>

@@ -24,3 +24,38 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ── Responsive Nav ───────────────────────────────────── */
+.nav-hamburger { display: none; }
+.nav-links     { display: flex; }
+
+/* ── Mobile Breakpoint ────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Show hamburger, hide desktop links */
+  .nav-hamburger { display: flex !important; }
+  .nav-links     { display: none !important; }
+
+  /* Reduce nav horizontal padding */
+  .site-nav { padding-left: 20px !important; padding-right: 20px !important; }
+
+  /* Stack any multi-column grid to a single column */
+  .mobile-stack {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  /* Reduce section horizontal padding */
+  .mobile-pad {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  /* Stack footer on mobile */
+  .mobile-footer {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+}

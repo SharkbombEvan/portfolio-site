@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import MobileNav from "@/components/MobileNav";
 
 export const revalidate = 0;
 
@@ -13,32 +14,10 @@ export default async function ProductsPage() {
   return (
     <main style={{ fontFamily: "'Georgia', serif", background: "#f8f6f1", minHeight: "100vh", color: "#1a1a1a" }}>
 
-      {/* NAV */}
-      <nav style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "24px 48px",
-        borderBottom: "1px solid #ddd",
-        background: "#f8f6f1",
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-      }}>
-        <Link href="/" style={{ fontFamily: "'Georgia', serif", fontWeight: "bold", fontSize: 18, letterSpacing: "0.05em", textDecoration: "none", color: "#1a1a1a" }}>
-          SHARKBOMB AUDIO
-        </Link>
-        <div style={{ display: "flex", gap: 32, fontSize: 14, letterSpacing: "0.08em" }}>
-          <Link href="/" style={{ textDecoration: "none", color: "#1a1a1a" }}>HOME</Link>
-          <Link href="/projects" style={{ textDecoration: "none", color: "#1a1a1a" }}>PROJECTS</Link>
-          <Link href="/products" style={{ textDecoration: "none", color: "#1a1a1a", borderBottom: "1px solid #1a1a1a", paddingBottom: 2 }}>PRODUCTS</Link>
-          <Link href="/about" style={{ textDecoration: "none", color: "#1a1a1a" }}>ABOUT</Link>
-          <Link href="/contact" style={{ textDecoration: "none", color: "#1a1a1a" }}>CONTACT</Link>
-        </div>
-      </nav>
+      <MobileNav activePage="/products" />
 
       {/* HEADER */}
-      <section style={{ padding: "80px 48px 64px", maxWidth: 1100, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
+      <section className="mobile-pad" style={{ padding: "80px 48px 64px", maxWidth: 1100, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
         <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: 24 }}>
           Available Now
         </p>
@@ -58,7 +37,7 @@ export default async function ProductsPage() {
       </section>
 
       {/* PRODUCT GRID */}
-      <section style={{ padding: "64px 48px 80px", maxWidth: 1100, margin: "0 auto" }}>
+      <section className="mobile-pad" style={{ padding: "64px 48px 80px", maxWidth: 1100, margin: "0 auto" }}>
         {products.length === 0 ? (
           <p style={{ color: "#888", fontStyle: "italic" }}>No products listed yet.</p>
         ) : (
@@ -137,7 +116,7 @@ export default async function ProductsPage() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ borderTop: "1px solid #ddd", padding: "24px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "#aaa", letterSpacing: "0.08em" }}>
+      <footer className="mobile-footer" style={{ borderTop: "1px solid #ddd", padding: "24px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "#aaa", letterSpacing: "0.08em" }}>
         <span>© {new Date().getFullYear()} SHARKBOMB AUDIO</span>
         <span>ELECTRICAL ENGINEERING · AUDIO EQUIPMENT</span>
       </footer>
