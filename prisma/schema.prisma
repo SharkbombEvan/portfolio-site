@@ -18,6 +18,7 @@ model Project {
   demoUrl    String?
   repoUrl    String?
   shopUrl    String?
+  price      String?
   isProduct  Boolean        @default(false)
   images     ProjectImage[]
   createdAt  DateTime       @default(now())

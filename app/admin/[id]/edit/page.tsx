@@ -41,6 +41,7 @@ async function updateProject(id: string, formData: FormData) {
       demoUrl: (formData.get("demoUrl") as string) || null,
       repoUrl: (formData.get("repoUrl") as string) || null,
       shopUrl: (formData.get("shopUrl") as string) || null,
+      price: (formData.get("price") as string) || null,
 
       tech,
 
@@ -91,6 +92,7 @@ export default async function EditProjectPage({
           demoUrl: project.demoUrl ?? "",
           repoUrl: project.repoUrl ?? "",
           shopUrl: project.shopUrl ?? "",
+          price: project.price ?? "",
           isProduct: project.isProduct ?? false,
           images: project.images.map((img) => ({ url: img.url, alt: img.alt ?? undefined })),
         }}

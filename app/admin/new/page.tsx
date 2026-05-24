@@ -39,6 +39,7 @@ export default function NewProjectPage() {
   const [demoUrl, setDemoUrl] = useState("");
   const [repoUrl, setRepoUrl] = useState("");
   const [shopUrl, setShopUrl] = useState("");
+  const [price, setPrice] = useState("");
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
   const [images, setImages] = useState<Img[]>([]);
   const [saving, setSaving] = useState(false);
@@ -67,6 +68,7 @@ export default function NewProjectPage() {
           demoUrl: demoUrl || null,
           repoUrl: repoUrl || null,
           shopUrl: shopUrl || null,
+          price: price || null,
           isProduct,
           images,
         }),
@@ -163,6 +165,16 @@ export default function NewProjectPage() {
           value={shopUrl}
           onChange={(e) => setShopUrl(e.target.value)}
           placeholder="https://reverb.com/item/..."
+          style={inputStyle}
+        />
+      </div>
+
+      <div style={fieldStyle}>
+        <label style={labelStyle}>Price</label>
+        <input
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          placeholder="e.g. $249"
           style={inputStyle}
         />
       </div>

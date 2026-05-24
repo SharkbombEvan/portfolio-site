@@ -91,61 +91,76 @@ export default async function HomePage() {
       </section>
 
       {/* FEATURED PROJECTS */}
-      <section style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
+      <section style={{ padding: "80px 48px", maxWidth: 1100, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
         <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: 48 }}>
           Featured Work
         </p>
-        <div style={{ display: "grid", gap: 48 }}>
-          {featuredProjects.length === 0 ? (
-            <p style={{ color: "#888", fontStyle: "italic" }}>No projects yet.</p>
-          ) : (
-            featuredProjects.map((project, i) => {
+        {featuredProjects.length === 0 ? (
+          <p style={{ color: "#888", fontStyle: "italic" }}>No projects yet.</p>
+        ) : (
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: 40,
+          }}>
+            {featuredProjects.map((project) => {
               const thumb = project.images[0]?.url ?? project.coverImage;
               return (
                 <Link
                   key={project.id}
                   href={`/projects/${project.slug}`}
-                  style={{ textDecoration: "none", color: "inherit", display: "grid", gridTemplateColumns: thumb ? "1fr 1fr" : "1fr", gap: 32, alignItems: "center" }}
+                  style={{ textDecoration: "none", color: "inherit", display: "block" }}
                 >
-                  {thumb && (
-                    <img
-                      src={thumb}
-                      alt={project.title}
-                      style={{
-                        width: "100%",
-                        aspectRatio: "4/3",
-                        objectFit: "cover",
-                        filter: "grayscale(20%)",
-                        order: i % 2 === 0 ? 0 : 1,
-                      }}
-                    />
-                  )}
-                  <div style={{ order: i % 2 === 0 ? 1 : 0 }}>
-                    <p style={{ fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#888", marginBottom: 12 }}>
-                      {String(i + 1).padStart(2, "0")}
-                    </p>
-                    <h2 style={{ fontSize: 28, fontWeight: "normal", marginBottom: 12, fontFamily: "'Georgia', serif" }}>
-                      {project.title}
-                    </h2>
-                    <p style={{ color: "#555", lineHeight: 1.6, fontSize: 15 }}>{project.summary}</p>
-                    {project.tech?.length > 0 && (
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 16 }}>
-                        {project.tech.map((t) => (
-                          <span key={t} style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#888", border: "1px solid #ccc", padding: "3px 8px" }}>
-                            {t}
-                          </span>
-                        ))}
+                  <div style={{
+                    width: "100%",
+                    aspectRatio: "1/1",
+                    background: "#ede9e3",
+                    overflow: "hidden",
+                    marginBottom: 16,
+                  }}>
+                    {thumb ? (
+                      <img
+                        src={thumb}
+                        alt={project.title}
+                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.3s ease" }}
+                      />
+                    ) : (
+                      <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <span style={{ fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", color: "#bbb" }}>No Image</span>
                       </div>
                     )}
-                    <p style={{ marginTop: 20, fontSize: 13, letterSpacing: "0.1em", textTransform: "uppercase", borderBottom: "1px solid #1a1a1a", display: "inline-block", paddingBottom: 2 }}>
-                      View Project →
-                    </p>
                   </div>
+                  <p style={{ fontSize: 11, letterSpacing: "0.15em", textTransform: "uppercase", color: "#888", marginBottom: 6 }}>
+                    Sharkbomb Audio
+                  </p>
+                  <h2 style={{ fontSize: 18, fontWeight: "normal", fontFamily: "'Georgia', serif", marginBottom: 6 }}>
+                    {project.title}
+                  </h2>
+                  {project.isProduct && project.price && (
+                    <p style={{ fontSize: 15, fontFamily: "'Georgia', serif", color: "#1a1a1a", marginBottom: 8 }}>
+                      {project.price}
+                    </p>
+                  )}
+                  <p style={{ fontSize: 14, color: "#666", lineHeight: 1.5, marginBottom: 12 }}>
+                    {project.summary}
+                  </p>
+                  {project.tech?.length > 0 && (
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 }}>
+                      {project.tech.map((t) => (
+                        <span key={t} style={{ fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "#888", border: "1px solid #ccc", padding: "2px 7px" }}>
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <p style={{ fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", borderBottom: "1px solid #1a1a1a", display: "inline-block", paddingBottom: 2 }}>
+                    View Details →
+                  </p>
                 </Link>
               );
-            })
-          )}
-        </div>
+            })}
+          </div>
+        )}
         {featuredProjects.length > 0 && (
           <div style={{ marginTop: 64, textAlign: "center" }}>
             <Link href="/projects" style={{ fontSize: 13, letterSpacing: "0.15em", textTransform: "uppercase", color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #1a1a1a", paddingBottom: 2 }}>

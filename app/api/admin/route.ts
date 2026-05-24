@@ -15,6 +15,7 @@ export async function POST(req: Request) {
     demoUrl,
     repoUrl,
     shopUrl,
+    price,
     isProduct,
     images,
   } = body;
@@ -37,6 +38,7 @@ export async function POST(req: Request) {
       demoUrl: demoUrl || null,
       repoUrl: repoUrl || null,
       shopUrl: shopUrl || null,
+      price: price || null,
       isProduct: isProduct ?? false,
       images: {
         create: (images as Img[] || []).map((img, i) => ({

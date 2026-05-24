@@ -97,6 +97,11 @@ export default async function ProjectPage({
         }}>
           {project.title}
         </h1>
+        {project.isProduct && project.price && (
+          <p style={{ fontSize: 22, fontFamily: "'Georgia', serif", color: "#1a1a1a", marginBottom: 16 }}>
+            {project.price}
+          </p>
+        )}
         <p style={{ fontSize: 17, color: "#555", maxWidth: 620, lineHeight: 1.7, marginBottom: 0 }}>
           {project.summary}
         </p>
@@ -176,8 +181,14 @@ export default async function ProjectPage({
           <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: 20 }}>
             Purchase
           </p>
-          <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7, marginBottom: 28, maxWidth: 480 }}>
+          <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7, marginBottom: 8, maxWidth: 480 }}>
             This item is available for purchase on Reverb.
+          </p>
+          <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7, marginBottom: 28, maxWidth: 480 }}>
+            Alternatively, contact me via email about this product at{" "}
+            <a href="mailto:evan@sharkbomb.net" style={{ color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: 1 }}>
+              evan@sharkbomb.net
+            </a>
           </p>
           <a
             href={project.shopUrl}

@@ -106,9 +106,14 @@ export default async function ProductsPage() {
                   <p style={{ fontSize: 11, letterSpacing: "0.15em", textTransform: "uppercase", color: "#888", marginBottom: 6 }}>
                     Sharkbomb Audio
                   </p>
-                  <h2 style={{ fontSize: 18, fontWeight: "normal", fontFamily: "'Georgia', serif", marginBottom: 8 }}>
+                  <h2 style={{ fontSize: 18, fontWeight: "normal", fontFamily: "'Georgia', serif", marginBottom: 6 }}>
                     {product.title}
                   </h2>
+                  {product.price && (
+                    <p style={{ fontSize: 15, fontFamily: "'Georgia', serif", color: "#1a1a1a", marginBottom: 8 }}>
+                      {product.price}
+                    </p>
+                  )}
                   <p style={{ fontSize: 14, color: "#666", lineHeight: 1.5, marginBottom: 12 }}>
                     {product.summary}
                   </p>

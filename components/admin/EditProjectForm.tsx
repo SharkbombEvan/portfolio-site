@@ -41,6 +41,7 @@ export default function EditProjectForm({
     demoUrl: string;
     repoUrl: string;
     shopUrl: string;
+    price: string;
     isProduct: boolean;
     images: Img[];
   };
@@ -105,6 +106,11 @@ export default function EditProjectForm({
       <div style={fieldStyle}>
         <label style={labelStyle}>Shop URL (Reverb)</label>
         <input name="shopUrl" defaultValue={project.shopUrl || ""} placeholder="https://reverb.com/item/..." style={inputStyle} />
+      </div>
+
+      <div style={fieldStyle}>
+        <label style={labelStyle}>Price</label>
+        <input name="price" defaultValue={project.price || ""} placeholder="e.g. $249" style={inputStyle} />
       </div>
 
       <div style={{ marginBottom: 20 }}>
