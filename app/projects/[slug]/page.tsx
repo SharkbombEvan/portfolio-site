@@ -4,6 +4,11 @@ import Link from "next/link";
 import ImageGallery from "@/components/ImageGallery";
 import ReactMarkdown from "react-markdown";
 import MobileNav from "@/components/MobileNav";
+import SiteFooter from "@/components/SiteFooter";
+import { areaLabel } from "@/lib/areas";
+import { CONTACT, modeFromParam, withMode } from "@/lib/site";
+import { visibleTech } from "@/components/ProjectCard";
+import type { Metadata } from "next";
 
 export const revalidate = 0;
 
@@ -20,12 +25,26 @@ function extractYouTubeId(url: string): string | null {
   return null;
 }
 
-export default async function ProjectPage({
+export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const project = await prisma.project.findUnique({ where: { slug }, select: { title: true, summary: true } });
+  if (!project) return {};
+  return { title: `${project.title} — Evan Demsey`, description: project.summary };
+}
+
+export default async function ProjectPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ from?: string }>;
 }) {
   const { slug } = await params;
+  const mode = modeFromParam((await searchParams).from);
 
   if (!slug) return notFound();
 
@@ -40,161 +59,150 @@ export default async function ProjectPage({
 
   if (!project) return notFound();
 
-  const backHref = project.isProduct ? "/products" : "/projects";
-  const backLabel = project.isProduct ? "← Back to Products" : "← Back to Projects";
-  const activeSection = project.isProduct ? "products" : "projects";
+  const isAudio = mode === "audio";
+  const tags = visibleTech(project.tech, mode);
+  const backHref = isAudio ? (project.isProduct ? "/audio/products" : "/audio/projects") : "/projects";
+  const backLabel = isAudio ? (project.isProduct ? "Back to products" : "Back to audio projects") : "Back to work";
+  const activePage = isAudio ? (project.isProduct ? "/audio/products" : "/audio/projects") : "/projects";
+
+  // Prev / next within the current view (audio-only on the audio side)
+  const scope = isAudio ? { areas: { has: "audio" } } : {};
+  const [newer, older] = await Promise.all([
+    prisma.project.findFirst({ where: { ...scope, createdAt: { gt: project.createdAt } }, orderBy: { createdAt: "asc" }, select: { slug: true, title: true } }),
+    prisma.project.findFirst({ where: { ...scope, createdAt: { lt: project.createdAt } }, orderBy: { createdAt: "desc" }, select: { slug: true, title: true } }),
+  ]);
+
+  const metaItems = [
+    project.role && { label: "Role", value: project.role },
+    project.year && { label: "Year", value: project.year },
+    project.context && { label: "Context", value: project.context },
+    project.areas.length > 0 && { label: "Area", value: project.areas.map(areaLabel).join(" · ") },
+  ].filter(Boolean) as { label: string; value: string }[];
 
   const youtubeId = project.demoUrl ? extractYouTubeId(project.demoUrl) : null;
   const showExternalDemoLink = project.demoUrl && !youtubeId;
   const hasMedia = project.images.length > 0 || project.coverImage || youtubeId;
 
   return (
-    <main style={{ fontFamily: "'Georgia', serif", background: "#f8f6f1", minHeight: "100vh", color: "#1a1a1a" }}>
-
-      <MobileNav activePage={activeSection === "products" ? "/products" : "/projects"} />
+    <main data-mode={mode}>
+      <MobileNav mode={mode} activePage={activePage} />
 
       {/* HEADER */}
-      <section className="mobile-pad" style={{ padding: "80px 48px 64px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
-        <Link
-          href={backHref}
-          style={{ fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: "#888", textDecoration: "none", display: "inline-block", marginBottom: 40 }}
-        >
+      <header className="wrap" style={{ paddingTop: 56, paddingBottom: 56 }}>
+        <Link href={backHref} className="link" style={{ fontSize: 15, color: "var(--muted)", display: "inline-block", marginBottom: 40 }}>
           {backLabel}
         </Link>
-        {project.isProduct && (
-          <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: 16 }}>
-            Available Now
-          </p>
-        )}
-        <h1 style={{
-          fontSize: "clamp(36px, 6vw, 64px)",
-          fontFamily: "'Georgia', serif",
-          fontWeight: "normal",
-          lineHeight: 1.1,
-          margin: "0 0 24px",
-          letterSpacing: "-0.02em",
-        }}>
+        <h1 className="display" style={{ fontSize: "clamp(40px, 7.4vw, 96px)", margin: 0, maxWidth: "16ch" }}>
           {project.title}
         </h1>
-        {project.isProduct && project.price && (
-          <p style={{ fontSize: 22, fontFamily: "'Georgia', serif", color: "#1a1a1a", marginBottom: 16 }}>
-            {project.price}
-          </p>
-        )}
-        <p style={{ fontSize: 17, color: "#555", maxWidth: 620, lineHeight: 1.7, marginBottom: 0 }}>
+        <p className="measure" style={{ fontSize: 21, lineHeight: 1.55, color: "var(--muted)", margin: "28px 0 0", maxWidth: "50ch" }}>
           {project.summary}
         </p>
+        {project.isProduct && project.price && (
+          <p className="display" style={{ fontSize: 34, margin: "28px 0 0" }}>{project.price}</p>
+        )}
+      </header>
 
-        {/* Tech tags */}
-        {project.tech?.length > 0 && (
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 28 }}>
-            {project.tech.map((t) => (
-              <span key={t} style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#888", border: "1px solid #ccc", padding: "3px 8px" }}>
-                {t}
-              </span>
+      {/* SPECS: structured facts about the project */}
+      {(metaItems.length > 0 || tags.length > 0 || showExternalDemoLink || project.repoUrl) && (
+        <section className="wrap" style={{ paddingBottom: 56 }}>
+          <dl style={{ margin: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 0, borderTop: "2px solid var(--ink)" }}>
+            {metaItems.map((m) => (
+              <div key={m.label} style={{ padding: "18px 24px 18px 0", borderBottom: "1px solid var(--rule)" }}>
+                <dt style={{ fontSize: 14, color: "var(--muted)", marginBottom: 4 }}>{m.label}</dt>
+                <dd style={{ margin: 0, fontSize: 17 }}>{m.value}</dd>
+              </div>
             ))}
-          </div>
-        )}
+            {tags.length > 0 && (
+              <div style={{ padding: "18px 24px 18px 0", borderBottom: "1px solid var(--rule)" }}>
+                <dt style={{ fontSize: 14, color: "var(--muted)", marginBottom: 4 }}>Tags</dt>
+                <dd className="mono" style={{ margin: 0, fontSize: 14 }}>{tags.join(", ")}</dd>
+              </div>
+            )}
+            {(showExternalDemoLink || project.repoUrl) && (
+              <div style={{ padding: "18px 24px 18px 0", borderBottom: "1px solid var(--rule)" }}>
+                <dt style={{ fontSize: 14, color: "var(--muted)", marginBottom: 4 }}>Links</dt>
+                <dd style={{ margin: 0, fontSize: 17, display: "flex", gap: 20, flexWrap: "wrap" }}>
+                  {showExternalDemoLink && <a href={project.demoUrl!} target="_blank" rel="noreferrer" className="link">Demo video</a>}
+                  {project.repoUrl && <a href={project.repoUrl} target="_blank" rel="noreferrer" className="link">Source on GitHub</a>}
+                </dd>
+              </div>
+            )}
+          </dl>
+        </section>
+      )}
 
-        {/* External links — only show demoUrl here if it's NOT a YouTube URL */}
-        {(showExternalDemoLink || project.repoUrl) && (
-          <div style={{ display: "flex", gap: 24, marginTop: 28 }}>
-            {showExternalDemoLink && (
-              <a
-                href={project.demoUrl!}
-                target="_blank"
-                rel="noreferrer"
-                style={{ fontSize: 13, letterSpacing: "0.1em", textTransform: "uppercase", color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #1a1a1a", paddingBottom: 2 }}
-              >
-                Demo Video →
-              </a>
-            )}
-            {project.repoUrl && (
-              <a
-                href={project.repoUrl}
-                target="_blank"
-                rel="noreferrer"
-                style={{ fontSize: 13, letterSpacing: "0.1em", textTransform: "uppercase", color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #1a1a1a", paddingBottom: 2 }}
-              >
-                GitHub Repo →
-              </a>
-            )}
-          </div>
-        )}
-      </section>
+      {/* HIGHLIGHTS */}
+      {project.highlights.length > 0 && (
+        <section className="wrap" style={{ paddingBottom: 56 }}>
+          <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 16, maxWidth: "60ch" }}>
+            {project.highlights.map((h) => (
+              <li key={h} style={{ fontSize: 20, lineHeight: 1.5, paddingLeft: 32, position: "relative" }}>
+                <span aria-hidden style={{ position: "absolute", left: 0, top: "0.5em", width: 12, height: 12, borderRadius: "50%", background: "var(--accent)", boxShadow: "0 0 0 3px var(--panel)" }} />
+                {h}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* IMAGES + VIDEO */}
       {hasMedia && (
-        <section className="mobile-pad" style={{ padding: "64px 48px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
+        <section className="wrap" style={{ paddingBottom: 72 }}>
           {project.images.length > 0 || youtubeId ? (
             <ImageGallery images={project.images} videoUrl={project.demoUrl} />
           ) : project.coverImage ? (
-            <img
-              src={project.coverImage}
-              alt={`${project.title} cover`}
-              style={{ width: "100%", objectFit: "cover", display: "block" }}
-            />
+            <img src={project.coverImage} alt={`${project.title} cover`} style={{ width: "100%", maxWidth: 900, objectFit: "cover", display: "block" }} />
           ) : null}
         </section>
       )}
 
-      {/* CONTENT */}
-      <section className="mobile-pad" style={{ padding: "64px 48px", maxWidth: 900, margin: "0 auto", borderBottom: project.shopUrl ? "1px solid #ddd" : "none" }}>
+      {/* WRITE-UP */}
+      <section className="wrap" style={{ paddingBottom: 96 }}>
         {project.content ? (
-          <article style={{
-            maxWidth: 700,
-            lineHeight: 1.8,
-            fontSize: 16,
-            color: "#333",
-          }}>
+          <article className="prose">
             <ReactMarkdown>{project.content}</ReactMarkdown>
           </article>
         ) : (
-          <p style={{ color: "#aaa", fontStyle: "italic", fontSize: 15 }}>No content yet.</p>
+          <p style={{ color: "var(--muted)", fontSize: 16 }}>The write-up for this project is coming soon.</p>
         )}
       </section>
 
-      {/* SHOP ON REVERB */}
+      {/* PURCHASE */}
       {project.shopUrl && (
-        <section className="mobile-pad" style={{ padding: "64px 48px 80px", maxWidth: 900, margin: "0 auto" }}>
-          <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: 20 }}>
-            Purchase
-          </p>
-          <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7, marginBottom: 8, maxWidth: 480 }}>
-            This item is available for purchase on Reverb.
-          </p>
-          <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7, marginBottom: 28, maxWidth: 480 }}>
-            Alternatively, contact me via email about this product at{" "}
-            <a href="mailto:evan@sharkbomb.net" style={{ color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: 1 }}>
-              evan@sharkbomb.net
-            </a>
-          </p>
-          <a
-            href={project.shopUrl}
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              display: "inline-block",
-              padding: "14px 36px",
-              background: "#1a1a1a",
-              color: "#f8f6f1",
-              textDecoration: "none",
-              fontSize: 13,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-            }}
-          >
-            Shop on Reverb →
-          </a>
+        <section className="on-panel" style={{ background: "var(--panel)", color: "var(--panel-ink)" }}>
+          <div className="wrap" style={{ paddingTop: 72, paddingBottom: 72, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 32, flexWrap: "wrap" }}>
+            <div>
+              <h2 className="display" style={{ fontSize: "clamp(30px, 4.6vw, 52px)", margin: "0 0 12px" }}>Buy this pedal</h2>
+              <p style={{ fontSize: 17, lineHeight: 1.6, margin: 0, color: "var(--panel-muted)", maxWidth: "46ch" }}>
+                It&apos;s listed on Reverb. You can also email me at{" "}
+                <a href={`mailto:${CONTACT.emailAudio}`} className="link" style={{ color: "var(--panel-ink)" }}>{CONTACT.emailAudio}</a>.
+              </p>
+            </div>
+            <a href={project.shopUrl} target="_blank" rel="noreferrer" className="btn">Buy on Reverb</a>
+          </div>
         </section>
       )}
 
-      {/* FOOTER */}
-      <footer className="mobile-footer" style={{ borderTop: "1px solid #ddd", padding: "24px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "#aaa", letterSpacing: "0.08em" }}>
-        <span>© {new Date().getFullYear()} SHARKBOMB AUDIO</span>
-        <span>ELECTRICAL ENGINEERING · AUDIO EQUIPMENT</span>
-      </footer>
+      {/* PREV / NEXT */}
+      {(newer || older) && (
+        <nav aria-label="More projects" className="wrap" style={{ paddingTop: 48, paddingBottom: 48, display: "flex", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
+          {older ? (
+            <Link href={withMode(`/projects/${older.slug}`, mode)} className="link" style={{ textDecoration: "none" }}>
+              <span style={{ display: "block", fontSize: 14, color: "var(--muted)", marginBottom: 4 }}>Previous project</span>
+              <span className="display" style={{ fontSize: 22 }}>{older.title}</span>
+            </Link>
+          ) : <span />}
+          {newer ? (
+            <Link href={withMode(`/projects/${newer.slug}`, mode)} className="link" style={{ textDecoration: "none", textAlign: "right" }}>
+              <span style={{ display: "block", fontSize: 14, color: "var(--muted)", marginBottom: 4 }}>Next project</span>
+              <span className="display" style={{ fontSize: 22 }}>{newer.title}</span>
+            </Link>
+          ) : <span />}
+        </nav>
+      )}
 
+      <SiteFooter mode={mode} />
     </main>
   );
 }

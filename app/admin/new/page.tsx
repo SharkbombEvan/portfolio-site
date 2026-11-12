@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import ProjectImagesField from "@/components/admin/ProjectImagesField";
 import { useRouter } from "next/navigation";
+import { AREAS } from "@/lib/areas";
 
 type Img = { url: string; alt?: string };
 
@@ -27,13 +28,41 @@ const inputStyle: React.CSSProperties = {
 };
 const textareaStyle: React.CSSProperties = { ...inputStyle, resize: "vertical" };
 
+const CASE_STUDY_TEMPLATE = `## Problem
+
+What needed to be solved, and why it mattered.
+
+## Approach
+
+How you broke it down and the options you considered.
+
+## Design details
+
+Key circuit / system decisions, with schematics or photos.
+
+## Results
+
+What it did, measured if possible.
+
+## What I'd do differently
+
+`;
+
 export default function NewProjectPage() {
   const router = useRouter();
   const [isProduct, setIsProduct] = useState(false);
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [summary, setSummary] = useState("");
-  const [contentMd, setContentMd] = useState("");
+  const [contentMd, setContentMd] = useState(CASE_STUDY_TEMPLATE);
+  const [areas, setAreas] = useState<string[]>([]);
+  const [featured, setFeatured] = useState(false);
+  const [featuredOrder, setFeaturedOrder] = useState("");
+  const [audioFeatured, setAudioFeatured] = useState(false);
+  const [role, setRole] = useState("");
+  const [year, setYear] = useState("");
+  const [context, setContext] = useState("");
+  const [highlights, setHighlights] = useState("");
   const [tech, setTech] = useState("");
   const [coverImage, setCoverImage] = useState("");
   const [demoUrl, setDemoUrl] = useState("");
@@ -71,6 +100,14 @@ export default function NewProjectPage() {
           price: price || null,
           isProduct,
           images,
+          areas,
+          featured,
+          featuredOrder: featuredOrder ? parseInt(featuredOrder, 10) : null,
+          audioFeatured,
+          role: role || null,
+          year: year || null,
+          context: context || null,
+          highlights: highlights.split("\n").map((l) => l.trim()).filter(Boolean),
         }),
       });
       const data = await res.json();
@@ -109,6 +146,24 @@ export default function NewProjectPage() {
         />
       </div>
 
+      <fieldset style={{ ...fieldStyle, border: "1px solid #ddd", padding: "12px 14px" }}>
+        <legend style={{ ...labelStyle, padding: "0 6px" }}>Areas (filters on /projects; "Audio" also lists it on the Sharkbomb Audio side)</legend>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 20px" }}>
+          {AREAS.map((a) => (
+            <label key={a.value} style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 14 }}>
+              <input
+                type="checkbox"
+                checked={areas.includes(a.value)}
+                onChange={(e) =>
+                  setAreas((prev) => (e.target.checked ? [...prev, a.value] : prev.filter((v) => v !== a.value)))
+                }
+              />
+              {a.label}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
       <div style={fieldStyle}>
         <label style={labelStyle}>Summary</label>
         <textarea
@@ -127,6 +182,26 @@ export default function NewProjectPage() {
           placeholder="Analog, PCB, Through-hole"
           style={inputStyle}
         />
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 2fr", gap: 16 }}>
+        <div style={fieldStyle}>
+          <label style={labelStyle}>Role</label>
+          <input value={role} onChange={(e) => setRole(e.target.value)} placeholder="e.g. Designer & builder" style={inputStyle} />
+        </div>
+        <div style={fieldStyle}>
+          <label style={labelStyle}>Year</label>
+          <input value={year} onChange={(e) => setYear(e.target.value)} placeholder="e.g. 2024" style={inputStyle} />
+        </div>
+        <div style={fieldStyle}>
+          <label style={labelStyle}>Context</label>
+          <input value={context} onChange={(e) => setContext(e.target.value)} placeholder="e.g. PRS internship, UVA ECE course, client commission" style={inputStyle} />
+        </div>
+      </div>
+
+      <div style={fieldStyle}>
+        <label style={labelStyle}>Highlights (one per line — outcomes & metrics)</label>
+        <textarea value={highlights} onChange={(e) => setHighlights(e.target.value)} rows={4} placeholder={"Reduced noise floor by 12 dB\nShipped 30 units"} style={textareaStyle} />
       </div>
 
       <div style={fieldStyle}>
@@ -187,6 +262,21 @@ export default function NewProjectPage() {
             onChange={(e) => setIsProduct(e.target.checked)}
           />
           <span style={{ fontWeight: 600, fontSize: 13 }}>List as a Product</span>
+        </label>
+      </div>
+
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "12px 28px", marginBottom: 20 }}>
+        <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+          <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} />
+          <span style={{ fontWeight: 600, fontSize: 13 }}>Feature on home page</span>
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontWeight: 600, fontSize: 13 }}>Order</span>
+          <input type="number" min={1} value={featuredOrder} onChange={(e) => setFeaturedOrder(e.target.value)} placeholder="1" style={{ ...inputStyle, width: 70 }} />
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+          <input type="checkbox" checked={audioFeatured} onChange={(e) => setAudioFeatured(e.target.checked)} />
+          <span style={{ fontWeight: 600, fontSize: 13 }}>Feature on Sharkbomb Audio page</span>
         </label>
       </div>
 

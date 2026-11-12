@@ -3,130 +3,104 @@
 import Link from "next/link";
 import { useState } from "react";
 
-const NAV_LINKS = [
-  { href: "/", label: "HOME" },
-  { href: "/projects", label: "PROJECTS" },
-  { href: "/products", label: "PRODUCTS" },
-  { href: "/about", label: "ABOUT" },
-  { href: "/contact", label: "CONTACT" },
+type Mode = "general" | "audio";
+type NavLink = { key: string; href: string; label: string };
+
+const GENERAL_LINKS: NavLink[] = [
+  { key: "/projects", href: "/projects", label: "Work" },
+  { key: "/about", href: "/about", label: "About" },
+  { key: "/resume", href: "/resume", label: "Résumé" },
+  { key: "/contact", href: "/contact", label: "Contact" },
 ];
 
-export default function MobileNav({ activePage }: { activePage?: string }) {
+const AUDIO_LINKS: NavLink[] = [
+  { key: "/audio/projects", href: "/audio/projects", label: "Projects" },
+  { key: "/audio/products", href: "/audio/products", label: "Products" },
+  { key: "/about", href: "/about?from=audio", label: "About" },
+  { key: "/contact", href: "/contact?from=audio", label: "Contact" },
+];
+
+function ModeSwitch({ mode, onNavigate }: { mode: Mode; onNavigate?: () => void }) {
+  const seg = (active: boolean): React.CSSProperties => ({
+    textDecoration: "none",
+    fontSize: 13,
+    fontWeight: 500,
+    padding: "7px 14px",
+    borderRadius: 999,
+    whiteSpace: "nowrap",
+    background: active ? "var(--ink)" : "transparent",
+    color: active ? "var(--paper)" : "var(--ink)",
+  });
+  return (
+    <div
+      className="switch"
+      role="group"
+      aria-label="Switch portfolio view"
+      style={{ display: "inline-flex", padding: 3, gap: 2, borderRadius: 999, boxShadow: "inset 0 0 0 1px var(--rule)", background: "var(--paper-2)" }}
+    >
+      <Link href="/" onClick={onNavigate} aria-current={mode === "general" ? "page" : undefined} style={seg(mode === "general")}>
+        All work
+      </Link>
+      <Link href="/audio" onClick={onNavigate} aria-current={mode === "audio" ? "page" : undefined} style={seg(mode === "audio")}>
+        Sharkbomb Audio
+      </Link>
+    </div>
+  );
+}
+
+export default function MobileNav({ activePage, mode = "general" }: { activePage?: string; mode?: Mode }) {
   const [open, setOpen] = useState(false);
+  const links = mode === "audio" ? AUDIO_LINKS : GENERAL_LINKS;
 
   return (
-    <div style={{ position: "sticky", top: 0, zIndex: 100, background: "#f8f6f1" }}>
-      <nav style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "20px 48px",
-        borderBottom: open ? "none" : "1px solid #ddd",
-      }} className="site-nav">
-        <Link href="/" style={{
-          fontFamily: "'Georgia', serif",
-          fontWeight: "bold",
-          fontSize: 18,
-          letterSpacing: "0.05em",
-          textDecoration: "none",
-          color: "#1a1a1a",
-        }}>
-          SHARKBOMB AUDIO
+    <div style={{ position: "sticky", top: 0, zIndex: 100, background: "var(--paper)", borderBottom: "1px solid var(--rule)" }}>
+      <nav className="site-nav wrap" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 68 }}>
+        <Link
+          href={mode === "audio" ? "/audio" : "/"}
+          className="display"
+          style={{ fontSize: 21, fontWeight: 700, textDecoration: "none", color: "var(--ink)" }}
+        >
+          {mode === "audio" ? "Sharkbomb Audio" : "Evan Demsey"}
         </Link>
 
-        {/* Desktop links — hidden on mobile via CSS */}
-        <div className="nav-links" style={{ display: "flex", gap: 32, fontSize: 14, letterSpacing: "0.08em" }}>
-          {NAV_LINKS.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              style={{
-                textDecoration: "none",
-                color: "#1a1a1a",
-                ...(activePage === href
-                  ? { borderBottom: "1px solid #1a1a1a", paddingBottom: 2 }
-                  : {}),
-              }}
-            >
+        <div className="nav-links" style={{ alignItems: "center", gap: 32, fontSize: 15 }}>
+          {links.map(({ key, href, label }) => (
+            <Link key={key} href={href} className="nav-link" aria-current={activePage === key ? "page" : undefined}>
               {label}
             </Link>
           ))}
+          <ModeSwitch mode={mode} />
         </div>
 
-        {/* Hamburger button — shown on mobile via CSS */}
         <button
           className="nav-hamburger"
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
-          style={{
-            display: "none",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            padding: "4px 0",
-            flexDirection: "column",
-            justifyContent: "center",
-            gap: 5,
-            width: 28,
-            height: 28,
-          }}
+          style={{ display: "none", background: "none", border: "none", cursor: "pointer", padding: "4px 0", flexDirection: "column", justifyContent: "center", gap: 5, width: 28, height: 28 }}
         >
-          {/* Bar 1 */}
-          <span style={{
-            display: "block",
-            width: 22,
-            height: 2,
-            background: "#1a1a1a",
-            transition: "transform 0.2s ease",
-            transform: open ? "translateY(7px) rotate(45deg)" : "none",
-            transformOrigin: "center",
-          }} />
-          {/* Bar 2 */}
-          <span style={{
-            display: "block",
-            width: 22,
-            height: 2,
-            background: "#1a1a1a",
-            transition: "opacity 0.2s ease",
-            opacity: open ? 0 : 1,
-          }} />
-          {/* Bar 3 */}
-          <span style={{
-            display: "block",
-            width: 22,
-            height: 2,
-            background: "#1a1a1a",
-            transition: "transform 0.2s ease",
-            transform: open ? "translateY(-7px) rotate(-45deg)" : "none",
-            transformOrigin: "center",
-          }} />
+          <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)", transition: "transform 0.2s ease", transform: open ? "translateY(7px) rotate(45deg)" : "none" }} />
+          <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)", transition: "opacity 0.2s ease", opacity: open ? 0 : 1 }} />
+          <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)", transition: "transform 0.2s ease", transform: open ? "translateY(-7px) rotate(-45deg)" : "none" }} />
         </button>
       </nav>
 
-      {/* Mobile dropdown menu */}
       {open && (
-        <div style={{ background: "#f8f6f1", borderBottom: "1px solid #ddd" }}>
-          {NAV_LINKS.map(({ href, label }) => (
+        <div style={{ background: "var(--paper)", borderTop: "1px solid var(--rule)" }}>
+          {links.map(({ key, href, label }) => (
             <Link
-              key={href}
+              key={key}
               href={href}
               onClick={() => setOpen(false)}
-              style={{
-                display: "block",
-                textDecoration: "none",
-                color: "#1a1a1a",
-                fontSize: 14,
-                letterSpacing: "0.12em",
-                padding: "16px 24px",
-                borderBottom: "1px solid #eee",
-                fontFamily: "'Georgia', serif",
-                ...(activePage === href ? { fontWeight: "bold" } : {}),
-              }}
+              className="display"
+              style={{ display: "block", textDecoration: "none", color: "var(--ink)", fontSize: 26, padding: "14px 20px", borderBottom: "1px solid var(--rule)", fontWeight: activePage === key ? 700 : 500 }}
             >
               {label}
             </Link>
           ))}
+          <div style={{ padding: "18px 20px 22px" }}>
+            <ModeSwitch mode={mode} onNavigate={() => setOpen(false)} />
+          </div>
         </div>
       )}
     </div>

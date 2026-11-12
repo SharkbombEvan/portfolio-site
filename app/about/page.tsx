@@ -1,142 +1,94 @@
-import Link from "next/link";
 import MobileNav from "@/components/MobileNav";
+import SiteFooter from "@/components/SiteFooter";
+import PageHeader from "@/components/PageHeader";
+import { emailFor, modeFromParam } from "@/lib/site";
 
-export default function AboutPage() {
+export default async function AboutPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ from?: string }>;
+}) {
+  const mode = modeFromParam((await searchParams).from);
+  const isAudio = mode === "audio";
+
+  const skills = isAudio
+    ? [
+        { title: "Custom builds", desc: "Pedals, amplifiers and studio equipment designed around your performance goals, then simulated, prototyped and measured on the bench." },
+        { title: "Modifications", desc: "Changes to gear you already own that improve its tone or performance, informed by reverse-engineering the original circuit." },
+        { title: "Repair", desc: "Diagnosis and repair of commercial audio equipment. 50+ repairs completed for three music stores around Washington, DC." },
+      ]
+    : [
+        { title: "Circuit and PCB", desc: "Analog circuit design, SPICE, KiCad, schematic capture, PCB layout, electronics troubleshooting." },
+        { title: "Embedded and digital", desc: "C++, Python, MATLAB, VHDL, Verilog, ESP32, Daisy Seed DSP, digital logic design." },
+        { title: "Laboratory", desc: "Oscilloscope and function generator, soldering, rework, signal tracing, circuit characterization." },
+        { title: "Mechanical and manufacturing", desc: "Fusion 360, sheet metal chassis design, 3D printing, DFM." },
+      ];
+
   return (
-    <main style={{ fontFamily: "'Georgia', serif", background: "#f8f6f1", minHeight: "100vh", color: "#1a1a1a" }}>
+    <main data-mode={mode}>
+      <MobileNav mode={mode} activePage="/about" />
+      <PageHeader title={isAudio ? "About Sharkbomb Audio" : "About"} />
 
-      <MobileNav activePage="/about" />
-
-      {/* HEADER */}
-      <section className="mobile-pad" style={{ padding: "80px 48px 64px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
-        <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: 24 }}>
-          About
-        </p>
-        <h1 style={{
-          fontSize: "clamp(36px, 6vw, 64px)",
-          fontFamily: "'Georgia', serif",
-          fontWeight: "normal",
-          lineHeight: 1.1,
-          margin: 0,
-          letterSpacing: "-0.02em",
-        }}>
-          Sharkbomb Audio
-        </h1>
-      </section>
-
-      {/* BIO SECTION */}
-      <section className="mobile-pad" style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
-        <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 64, alignItems: "start" }}>
-          <div>
-            <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: 0 }}>
-              Background
+      <section className="wrap" style={{ paddingBottom: 96 }}>
+        <div className="split">
+          {isAudio ? (
+            <h2 className="display" style={{ fontSize: 32, margin: 0 }}>Background</h2>
+          ) : (
+            <img
+              src="/headshot.jpg"
+              alt="Evan Demsey"
+              width={800}
+              height={800}
+              style={{ width: "100%", maxWidth: 340, aspectRatio: "1/1", objectFit: "cover", objectPosition: "50% 20%", display: "block", background: "var(--paper-2)", borderRadius: 2 }}
+            />
+          )}
+          <div className="prose">
+            <p>
+              My name is Evan Demsey. I&apos;m an electrical engineering student at the University of Virginia. My path to choosing electrical engineering is quite unique: audio. In 2020, I learned about the mythical &quot;Klon Centaur&quot; guitar pedal, which drove me to learn the basics of pedal building and audio design. I started making pedals for myself, to mimic the sound of some of my favorite guitarists. I began selling them to friends and taking repair jobs from friends and local used music stores, working under the name Sharkbomb Audio. Since then I&apos;ve designed and built 20+ guitar pedals and 6 guitar amplifiers for amateur and professional musicians, and repaired more than 50 pieces of gear for three music stores around Washington, DC.
             </p>
-          </div>
-          <div>
-            {/* REPLACE THIS PARAGRAPH WITH YOUR BIO */}
-            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#333", marginBottom: 24}}>
-              My name is Evan Demsey. I am currently an electrical engineering student at the University of Virginia. I got into electrical engineering and audio equipment design in 2020, when I learned about the mythical “Klon Centaur” pedal. I learned some of the basics of pedal building and audio design, and the rest followed after.
+            <p>
+              In 2023 I reached out to Paul Smith, the founder and CEO of PRS Guitars. He selected me to design, build and repair equipment for his studio. I still work with Paul closely in my free time, helping translate his audio needs into physical equipment. Since then I designed a 4-layer BGA carrier board as an intern at the U.S. Army Research Laboratory, and spent summer 2026 on the production line at EarthQuaker Devices.
             </p>
-            {/* REPLACE THIS PARAGRAPH WITH MORE OF YOUR STORY */}
-            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#333", marginBottom: 24 }}>
-              I officially started branding my work under the name Sharkbomb Audio once I knew that this was a hobby I wanted to pursue. I started off making pedals for myself to mimic the sound of some of my favorite guitarists. I eventually started selling pedals to friends and accepting repair jobs from both friends and local used music stores. 
-
-              My journey stepped up to the next level in 2023, when I reached out to Paul of Paul Reed Smith guitars, who accepted me as an intern. During my internship at PRS, I built, modified, and designed several pieces of equipment for Paul’s personal studio, as well as assisted with amplifier repairs in the factory. 
-            </p>
-            {/* REPLACE THIS PARAGRAPH WITH YOUR PHILOSOPHY */}
-            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#333"}}>
-              Now I am primarily a student; however, I still build guitar pedals in my lab space and on breaks when I go home. I love learning new skills to inform my designs and working on new projects. 
-
-              I believe that a better understanding on what your pedal is doing internally allows you to better connect with your gear. If you ever have questions on how my gear works, feel free to reach out!
+            <p>
+              At UVA, I enjoy teaching other students about fundamental electrical engineering topics as a teaching assistant for 225 students across 4 periods of signals and systems, applied circuits, and digital logic design. Outside of engineering, my love for music continues! I&apos;m a member of UVA&apos;s Cavalier Marching Band and Athletic Band. I also founded the Birding at UVA Club, which now has 350 members and has sparked a partnership with the National Audubon Society, and of course I still love spending time designing and building audio equipment. If any of this piques your interest, please reach out. I&apos;d love to hear from you!
             </p>
           </div>
         </div>
       </section>
 
-      {/* CAPABILITIES */}
-      <section className="mobile-pad" style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
-        <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 64, alignItems: "start" }}>
-          <div>
-            <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888" }}>
-              Capabilities
-            </p>
-          </div>
-          <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
-            {[
-              { title: "Custom Builds", desc: "Making your original equipment dreams come true! Building amplifiers, effects, and more from the ground up." },
-              { title: "Modifications", desc: "Upgrading and modifying existing equipment to improve performance and tone." },
-              { title: "Repair & Restoration", desc: "Bringing vintage and modern audio gear back to life." },
-              { title: "Circuit Design", desc: "Analog and mixed-signal circuit design for audio applications." },
-            ].map((skill) => (
-              <div key={skill.title}>
-                <h3 style={{ fontSize: 15, fontWeight: "normal", fontFamily: "'Georgia', serif", marginBottom: 10, borderTop: "1px solid #1a1a1a", paddingTop: 14 }}>
-                  {skill.title}
-                </h3>
-                <p style={{ fontSize: 13, color: "#666", lineHeight: 1.6 }}>{skill.desc}</p>
-              </div>
-            ))}
+      <section style={{ background: "var(--paper-2)" }}>
+        <div className="wrap section">
+          <div className="split">
+            <h2 className="display" style={{ fontSize: 32, margin: 0 }}>{isAudio ? "What I take on" : "Skills"}</h2>
+            <dl style={{ margin: 0 }}>
+              {skills.map((c, i) => (
+                <div key={c.title} style={{ padding: "22px 0", borderTop: i === 0 ? "2px solid var(--ink)" : "1px solid var(--rule)" }}>
+                  <dt className="display" style={{ fontSize: 24, marginBottom: 6 }}>{c.title}</dt>
+                  <dd style={{ margin: 0, fontSize: 17, lineHeight: 1.65, color: "var(--muted)", maxWidth: "54ch" }}>{c.desc}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
       </section>
 
-      {/* CONTACT */}
-      <section className="mobile-pad" style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto" }}>
-        <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 64, alignItems: "start" }}>
+      <section className="wrap section">
+        <div className="split">
+          <h2 className="display" style={{ fontSize: 32, margin: 0 }}>Contact</h2>
           <div>
-            <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888" }}>
-              Contact
+            <p style={{ fontSize: 19, lineHeight: 1.6, color: "var(--muted)", margin: "0 0 20px", maxWidth: "50ch" }}>
+              {isAudio
+                ? "Interested in a custom build, modification, or repair? I'd love to chat."
+                : "Interested in working together, or just want to talk hardware? I'd love to chat."}
             </p>
-          </div>
-          <div>
-            <p style={{ fontSize: 15, lineHeight: 1.8, color: "#444", marginBottom: 32 }}>
-              Interested in a custom build, modification, or repair? I'd love to chat! Get in touch.
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-              <a
-                href="mailto:Evan@sharkbomb.net"
-                style={{ fontSize: 15, color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: 2, display: "inline-block" }}
-              >
-                evan@sharkbomb.net
-              </a>
-              <div style={{ display: "flex", gap: 32 }}>
-                <a
-                  href="https://github.com/SharkbombEvan"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: 2 }}
-                >
-                  GitHub
-                </a>
-                <a
-                  href="https://linkedin.com/in/EvanDemsey"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: 2 }}
-                >
-                  LinkedIn
-                </a>
-                {/* Instagram placeholder — uncomment and add URL when ready:
-                <a
-                  href="https://instagram.com/yourusername"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: 2 }}
-                >
-                  Instagram
-                </a>
-                */}
-              </div>
-            </div>
+            <a href={`mailto:${emailFor(mode)}`} className="display link" style={{ fontSize: "clamp(24px, 4vw, 44px)", textUnderlineOffset: 8 }}>
+              {emailFor(mode)}
+            </a>
           </div>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="mobile-footer" style={{ borderTop: "1px solid #ddd", padding: "24px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "#aaa", letterSpacing: "0.08em" }}>
-        <span>© {new Date().getFullYear()} SHARKBOMB AUDIO</span>
-        <span>ELECTRICAL ENGINEERING · AUDIO EQUIPMENT</span>
-      </footer>
-
+      <SiteFooter mode={mode} />
     </main>
   );
 }

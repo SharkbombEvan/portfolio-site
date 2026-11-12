@@ -18,6 +18,14 @@ export async function POST(req: Request) {
     price,
     isProduct,
     images,
+    areas,
+    featured,
+    featuredOrder,
+    audioFeatured,
+    role,
+    year,
+    context,
+    highlights,
   } = body;
 
   if (!title || !slug) {
@@ -40,6 +48,14 @@ export async function POST(req: Request) {
       shopUrl: shopUrl || null,
       price: price || null,
       isProduct: isProduct ?? false,
+      areas: Array.isArray(areas) ? areas : [],
+      featured: featured ?? false,
+      featuredOrder: Number.isInteger(featuredOrder) ? featuredOrder : null,
+      audioFeatured: audioFeatured ?? false,
+      role: role || null,
+      year: year || null,
+      context: context || null,
+      highlights: Array.isArray(highlights) ? highlights : [],
       images: {
         create: (images as Img[] || []).map((img, i) => ({
           url: img.url,

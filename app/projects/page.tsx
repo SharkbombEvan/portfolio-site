@@ -1,125 +1,44 @@
-import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import type { Metadata } from "next";
 import MobileNav from "@/components/MobileNav";
+import SiteFooter from "@/components/SiteFooter";
+import PageHeader from "@/components/PageHeader";
+import ProjectList from "@/components/ProjectList";
+import AreaFilter from "@/components/AreaFilter";
+import { prisma } from "@/lib/prisma";
+import { cardInclude } from "@/lib/projects";
+import { areaLabel, isArea } from "@/lib/areas";
 
 export const revalidate = 0;
 
-export default async function ProjectsPage() {
-  const projects = await prisma.project.findMany({
-    orderBy: { createdAt: "desc" },
-    include: { images: { orderBy: { order: "asc" }, take: 1 } },
-  });
+export const metadata: Metadata = {
+  title: "Work — Evan Demsey",
+  description: "Selected engineering projects by Evan Demsey: analog circuits, audio hardware, and more.",
+};
+
+export default async function ProjectsPage({ searchParams }: { searchParams: Promise<{ area?: string }> }) {
+  const { area } = await searchParams;
+  const active = isArea(area) ? area : undefined;
+
+  const [projects, allAreas] = await Promise.all([
+    prisma.project.findMany({
+      where: active ? { areas: { has: active } } : undefined,
+      orderBy: { createdAt: "desc" },
+      include: cardInclude,
+    }),
+    prisma.project.findMany({ select: { areas: true } }),
+  ]);
+  const available = Array.from(new Set(allAreas.flatMap((p) => p.areas)));
 
   return (
-    <main style={{ fontFamily: "'Georgia', serif", background: "#f8f6f1", minHeight: "100vh", color: "#1a1a1a" }}>
-
-      <MobileNav activePage="/projects" />
-
-      {/* HEADER */}
-      <section className="mobile-pad" style={{ padding: "80px 48px 64px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
-        <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: 24 }}>
-          Portfolio
-        </p>
-        <h1 style={{
-          fontSize: "clamp(36px, 6vw, 64px)",
-          fontFamily: "'Georgia', serif",
-          fontWeight: "normal",
-          lineHeight: 1.1,
-          margin: 0,
-          letterSpacing: "-0.02em",
-        }}>
-          All Projects
-        </h1>
+    <main data-mode="general">
+      <MobileNav mode="general" activePage="/projects" />
+      <PageHeader title={active ? areaLabel(active) : "Work"}>
+        {available.length > 1 && <AreaFilter active={active} available={available} />}
+      </PageHeader>
+      <section className="wrap" style={{ paddingBottom: 112 }}>
+        <ProjectList projects={projects} mode="general" emptyText="Nothing in this area yet." />
       </section>
-
-      {/* PROJECTS LIST */}
-      <section className="mobile-pad" style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto" }}>
-        {projects.length === 0 ? (
-          <p style={{ color: "#888", fontStyle: "italic" }}>No projects yet.</p>
-        ) : (
-          <div style={{ display: "grid", gap: 0 }}>
-            {projects.map((project, i) => {
-              const thumb = project.images[0]?.url ?? project.coverImage;
-              return (
-                <Link
-                  key={project.id}
-                  href={`/projects/${project.slug}`}
-                  className="mobile-stack"
-                  style={{
-                    textDecoration: "none",
-                    color: "inherit",
-                    display: "grid",
-                    gridTemplateColumns: thumb ? "1fr 1fr" : "1fr",
-                    gap: 40,
-                    alignItems: "center",
-                    paddingBottom: 64,
-                    paddingTop: i === 0 ? 0 : 64,
-                    borderBottom: "1px solid #ddd",
-                  }}
-                >
-                  {thumb && (
-                    <img
-                      src={thumb}
-                      alt={project.title}
-                      style={{
-                        width: "100%",
-                        aspectRatio: "4/3",
-                        objectFit: "cover",
-                        filter: "grayscale(20%)",
-                        order: i % 2 === 0 ? 0 : 1,
-                      }}
-                    />
-                  )}
-                  <div style={{ order: i % 2 === 0 ? 1 : 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-                      <p style={{ fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#888", margin: 0 }}>
-                        {String(i + 1).padStart(2, "0")}
-                      </p>
-                      {project.isProduct && (
-                        <span style={{
-                          fontSize: 10,
-                          letterSpacing: "0.12em",
-                          textTransform: "uppercase",
-                          color: "#f8f6f1",
-                          background: "#1a1a1a",
-                          padding: "3px 8px",
-                        }}>
-                          Product
-                        </span>
-                      )}
-                    </div>
-                    <h2 style={{ fontSize: 28, fontWeight: "normal", marginBottom: 12, fontFamily: "'Georgia', serif" }}>
-                      {project.title}
-                    </h2>
-                    <p style={{ color: "#555", lineHeight: 1.6, fontSize: 15, marginBottom: 16 }}>
-                      {project.summary}
-                    </p>
-                    {project.tech?.length > 0 && (
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}>
-                        {project.tech.map((t) => (
-                          <span key={t} style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#888", border: "1px solid #ccc", padding: "3px 8px" }}>
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    <p style={{ fontSize: 13, letterSpacing: "0.1em", textTransform: "uppercase", borderBottom: "1px solid #1a1a1a", display: "inline-block", paddingBottom: 2 }}>
-                      View Project →
-                    </p>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        )}
-      </section>
-
-      {/* FOOTER */}
-      <footer className="mobile-footer" style={{ borderTop: "1px solid #ddd", padding: "24px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "#aaa", letterSpacing: "0.08em" }}>
-        <span>© {new Date().getFullYear()} SHARKBOMB AUDIO</span>
-        <span>ELECTRICAL ENGINEERING · AUDIO EQUIPMENT</span>
-      </footer>
-
+      <SiteFooter mode="general" />
     </main>
   );
 }

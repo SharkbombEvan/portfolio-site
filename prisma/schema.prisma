@@ -20,6 +20,19 @@ model Project {
   shopUrl    String?
   price      String?
   isProduct  Boolean        @default(false)
+
+  // Portfolio organization
+  areas         String[] @default([])
+  featured      Boolean  @default(false)
+  featuredOrder Int?
+  audioFeatured Boolean  @default(false)
+
+  // Case-study details
+  role       String?
+  year       String?
+  context    String?
+  highlights String[]       @default([])
+
   images     ProjectImage[]
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt

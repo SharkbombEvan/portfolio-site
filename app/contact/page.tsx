@@ -1,131 +1,64 @@
+import Link from "next/link";
+import type { Metadata } from "next";
 import MobileNav from "@/components/MobileNav";
+import SiteFooter from "@/components/SiteFooter";
+import PageHeader from "@/components/PageHeader";
+import { CONTACT, emailFor, modeFromParam } from "@/lib/site";
 
-export default function ContactPage() {
+export const metadata: Metadata = {
+  title: "Contact — Evan Demsey",
+  description: "Get in touch about engineering opportunities, or about custom audio builds, modifications, and repairs.",
+};
+
+export default async function ContactPage({ searchParams }: { searchParams: Promise<{ from?: string }> }) {
+  const mode = modeFromParam((await searchParams).from);
+  const isAudio = mode === "audio";
+
+  const rows = [
+    { label: "GitHub", href: CONTACT.github, text: "github.com/SharkbombEvan" },
+    { label: "LinkedIn", href: CONTACT.linkedin, text: "linkedin.com/in/evandemsey" },
+    ...(isAudio
+      ? [
+          { label: "Instagram", href: CONTACT.instagram, text: "instagram.com/SharkbombAudio" },
+          { label: "Reverb shop", href: CONTACT.reverb, text: "reverb.com/shop/sharkbombaudio" },
+        ]
+      : []),
+  ];
+
   return (
-    <main style={{ fontFamily: "'Georgia', serif", background: "#f8f6f1", minHeight: "100vh", color: "#1a1a1a" }}>
-
-      <MobileNav activePage="/contact" />
-
-      {/* HEADER */}
-      <section className="mobile-pad" style={{ padding: "80px 48px 64px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
-        <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: 24 }}>
-          Contact
-        </p>
-        <h1 style={{
-          fontSize: "clamp(36px, 6vw, 64px)",
-          fontFamily: "'Georgia', serif",
-          fontWeight: "normal",
-          lineHeight: 1.1,
-          margin: 0,
-          letterSpacing: "-0.02em",
-        }}>
-          Get In Touch
-        </h1>
-      </section>
-
-      {/* CONTACT CONTENT */}
-      <section className="mobile-pad" style={{ padding: "80px 48px", maxWidth: 900, margin: "0 auto", borderBottom: "1px solid #ddd" }}>
-        <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 64, alignItems: "start" }}>
-          <div>
-            <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888" }}>
-              Reach Out
-            </p>
-          </div>
-          <div>
-            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#444", marginBottom: 16 }}>
-              Interested in a custom build, modification, or repair? I'd love to hear about your project.
-            </p>
-            <p style={{ fontSize: 17, lineHeight: 1.8, color: "#444", marginBottom: 48 }}>
-              Whether you have a specific piece of gear in mind or just want to talk through what's possible, feel free to reach out directly.
-            </p>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-
-              {/* EMAIL */}
-              <div style={{ borderTop: "1px solid #ddd", paddingTop: 24 }}>
-                <p style={{ fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#888", marginBottom: 12 }}>
-                  Email
-                </p>
-                <a
-                  href="mailto:evan@sharkbomb.net"
-                  style={{ fontSize: 18, color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: 2 }}
-                >
-                 evan@sharkbomb.net
-                </a>
-              </div>
-
-              {/* GITHUB */}
-              <div style={{ borderTop: "1px solid #ddd", paddingTop: 24 }}>
-                <p style={{ fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#888", marginBottom: 12 }}>
-                  GitHub
-                </p>
-                <a
-                  href="https://github.com/SharkbombEvan"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ fontSize: 18, color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: 2 }}
-                >
-                  https://github.com/SharkbombEvan
-                </a>
-              </div>
-
-              {/* LINKEDIN */}
-              <div style={{ borderTop: "1px solid #ddd", paddingTop: 24 }}>
-                <p style={{ fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#888", marginBottom: 12 }}>
-                  LinkedIn
-                </p>
-                <a
-                  href="https://linkedin.com/in/EvanDemsey"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ fontSize: 18, color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: 2 }}
-                >
-                  linkedin.com/in/EvanDemsey
-                </a>
-              </div>
-
-              {
-              <div style={{ borderTop: "1px solid #ddd", paddingTop: 24 }}>
-                <p style={{ fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#888", marginBottom: 12 }}>
-                  Instagram
-                </p>
-                <a
-                  href="https://instagram.com/SharkbombAudio"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ fontSize: 18, color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: 2 }}
-                >
-                  instagram.com/SharkbombAudio
-                </a>
-              </div>
-              }
-
-                            {/* REVERB */}
-              <div style={{ borderTop: "1px solid #ddd", paddingTop: 24 }}>
-                <p style={{ fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#888", marginBottom: 12 }}>
-                  Reverb Shop
-                </p>
-                <a
-                  href="https://reverb.com/shop/sharkbombaudio"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ fontSize: 18, color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: 2 }}
-                >
-                  https://reverb.com/shop/sharkbombaudio
-                </a>
-              </div>
-
+    <main data-mode={mode}>
+      <MobileNav mode={mode} activePage="/contact" />
+      <PageHeader
+        title={isAudio ? "Start a build or repair" : "Contact"}
+        intro={
+          isAudio
+            ? "Tell me about your project. Whether you have a specific piece of gear in mind or just want to talk through what's possible, email me directly."
+            : "I'm happy to talk about internships, projects and engineering roles. Email is the quickest way to reach me."
+        }
+      />
+      <section className="wrap" style={{ paddingBottom: 96 }}>
+        <a href={`mailto:${emailFor(mode)}`} className="display link" style={{ fontSize: "clamp(28px, 6vw, 72px)", textUnderlineOffset: 10, textDecorationThickness: 2, wordBreak: "break-word" }}>
+          {emailFor(mode)}
+        </a>
+        <dl style={{ margin: "64px 0 0", maxWidth: 640 }}>
+          {rows.map((r, i) => (
+            <div key={r.label} style={{ display: "flex", justifyContent: "space-between", gap: 24, flexWrap: "wrap", padding: "18px 0", borderTop: i === 0 ? "2px solid var(--ink)" : "1px solid var(--rule)" }}>
+              <dt style={{ color: "var(--muted)", fontSize: 16 }}>{r.label}</dt>
+              <dd style={{ margin: 0, fontSize: 16 }}>
+                <a href={r.href} target="_blank" rel="noreferrer" className="link">{r.text}</a>
+              </dd>
             </div>
-          </div>
-        </div>
+          ))}
+        </dl>
+        <p style={{ marginTop: 40, fontSize: 16, color: "var(--muted)" }}>
+          {isAudio ? (
+            <>Looking to hire me instead? <Link href="/contact" className="link">Contact me about engineering work</Link>.</>
+          ) : (
+            <>Need custom audio gear or a repair? <Link href="/contact?from=audio" className="link">Contact Sharkbomb Audio</Link>.</>
+          )}
+        </p>
       </section>
-
-      {/* FOOTER */}
-      <footer className="mobile-footer" style={{ borderTop: "1px solid #ddd", padding: "24px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "#aaa", letterSpacing: "0.08em" }}>
-        <span>© {new Date().getFullYear()} SHARKBOMB AUDIO</span>
-        <span>ELECTRICAL ENGINEERING · AUDIO EQUIPMENT</span>
-      </footer>
-
+      <SiteFooter mode={mode} />
     </main>
   );
 }

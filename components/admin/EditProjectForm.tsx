@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import ProjectImagesField from "@/components/admin/ProjectImagesField";
+import { AREAS } from "@/lib/areas";
 
 type Img = { url: string; alt?: string };
 
@@ -43,6 +44,14 @@ export default function EditProjectForm({
     shopUrl: string;
     price: string;
     isProduct: boolean;
+    areas: string[];
+    featured: boolean;
+    featuredOrder: string;
+    audioFeatured: boolean;
+    role: string;
+    year: string;
+    context: string;
+    highlights: string[];
     images: Img[];
   };
   action: (formData: FormData) => Promise<void>;
@@ -78,6 +87,18 @@ export default function EditProjectForm({
         <input name="slug" defaultValue={project.slug} required style={inputStyle} />
       </div>
 
+      <fieldset style={{ ...fieldStyle, border: "1px solid #ddd", padding: "12px 14px" }}>
+        <legend style={{ ...labelStyle, padding: "0 6px" }}>Areas (shown as filters on /projects; "Audio" also lists it on the Sharkbomb Audio side)</legend>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 20px" }}>
+          {AREAS.map((a) => (
+            <label key={a.value} style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 14 }}>
+              <input type="checkbox" name="areas" value={a.value} defaultChecked={project.areas.includes(a.value)} />
+              {a.label}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
       <div style={fieldStyle}>
         <label style={labelStyle}>Summary</label>
         <textarea name="summary" defaultValue={project.summary} rows={3} style={textareaStyle} />
@@ -86,6 +107,26 @@ export default function EditProjectForm({
       <div style={fieldStyle}>
         <label style={labelStyle}>Tech (comma-separated)</label>
         <input name="tech" defaultValue={(project.tech || []).join(", ")} style={inputStyle} />
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 2fr", gap: 16 }}>
+        <div style={fieldStyle}>
+          <label style={labelStyle}>Role</label>
+          <input name="role" defaultValue={project.role} placeholder="e.g. Designer & builder" style={inputStyle} />
+        </div>
+        <div style={fieldStyle}>
+          <label style={labelStyle}>Year</label>
+          <input name="year" defaultValue={project.year} placeholder="e.g. 2024" style={inputStyle} />
+        </div>
+        <div style={fieldStyle}>
+          <label style={labelStyle}>Context</label>
+          <input name="context" defaultValue={project.context} placeholder="e.g. PRS internship, UVA ECE course, client commission" style={inputStyle} />
+        </div>
+      </div>
+
+      <div style={fieldStyle}>
+        <label style={labelStyle}>Highlights (one per line — outcomes & metrics)</label>
+        <textarea name="highlights" defaultValue={project.highlights.join("\n")} rows={4} placeholder={"Reduced noise floor by 12 dB\nShipped 30 units"} style={textareaStyle} />
       </div>
 
       <div style={fieldStyle}>
@@ -117,6 +158,21 @@ export default function EditProjectForm({
         <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
           <input type="checkbox" name="isProduct" defaultChecked={project.isProduct} value="true" />
           <span style={{ fontWeight: 600, fontSize: 13 }}>List as a Product</span>
+        </label>
+      </div>
+
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "12px 28px", marginBottom: 20 }}>
+        <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+          <input type="checkbox" name="featured" value="true" defaultChecked={project.featured} />
+          <span style={{ fontWeight: 600, fontSize: 13 }}>Feature on home page</span>
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontWeight: 600, fontSize: 13 }}>Order</span>
+          <input name="featuredOrder" type="number" min={1} defaultValue={project.featuredOrder} placeholder="1" style={{ ...inputStyle, width: 70 }} />
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+          <input type="checkbox" name="audioFeatured" value="true" defaultChecked={project.audioFeatured} />
+          <span style={{ fontWeight: 600, fontSize: 13 }}>Feature on Sharkbomb Audio page</span>
         </label>
       </div>
 

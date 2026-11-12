@@ -1,8 +1,25 @@
-# Sharkbomb Audio — Portfolio Site
+# Evan Demsey — Engineering Portfolio (with Sharkbomb Audio)
 
-This is the personal portfolio site for Sharkbomb Audio, an electrical engineering business
-specializing in building, modifying, and repairing audio equipment. The site is built with
-Next.js and hosted on Vercel.
+This is Evan Demsey's engineering portfolio. Sharkbomb Audio — his electrical engineering business
+for building, modifying, and repairing audio equipment — lives inside it as a featured section at
+`/audio`. The site is built with Next.js and hosted on Vercel.
+
+---
+
+## Site Structure: "Person first, studio second"
+
+Two modes share one design system:
+- **General** (`/`, `/projects`, `/about`, `/resume`, `/contact`): for employers. Shows ALL projects, audio included.
+- **Audio** (`/audio`, `/audio/projects`, `/audio/products`): for customers. A filtered view (`areas has "audio"`), never a separate silo.
+
+- The nav has a segmented switch `All Work | Sharkbomb Audio` (real routes, not client state). `components/MobileNav.tsx` takes `mode`.
+- Shared pages (`/about`, `/contact`, `/projects/[slug]`) pick their mode from `?from=audio` (`lib/site.ts`: `modeFromParam`, `withMode`).
+- `/products` permanently redirects to `/audio/products` (`next.config.ts`).
+- Shared components: `MobileNav`, `SiteFooter`, `ProjectCard`, `ProjectList`, `AreaFilter`. Use them instead of copying nav/footer markup.
+- Project domain tags live in `lib/areas.ts` (single source of truth for admin checkboxes and filter chips).
+- Home featured = `featured` projects ordered by `featuredOrder` (falls back to newest 3). `/audio` uses `audioFeatured`.
+- Drop a PDF at `public/resume.pdf` and `/resume` shows a download button automatically.
+- The nav/footer snippets further down are the OLD audio-only versions; `MobileNav`/`SiteFooter` supersede them.
 
 ---
 
@@ -67,8 +84,9 @@ portfolio-site/
 │   │   └── page.tsx           # About page (server component)
 │   ├── contact/
 │   │   └── page.tsx           # Contact page (server component)
-│   ├── products/
-│   │   └── page.tsx           # Products catalog grid (server component)
+│   ├── audio/                 # Sharkbomb Audio side: page.tsx, projects/, products/
+│   ├── resume/
+│   │   └── page.tsx           # Résumé (PDF button if public/resume.pdf exists)
 │   ├── projects/
 │   │   ├── [slug]/
 │   │   │   └── page.tsx       # Individual project detail page
@@ -131,6 +149,19 @@ model Project {
   demoUrl    String?
   repoUrl    String?
   isProduct  Boolean        @default(false)
+  shopUrl    String?
+  price      String?
+
+  areas         String[] @default([])   // domain tags, see lib/areas.ts
+  featured      Boolean  @default(false)
+  featuredOrder Int?
+  audioFeatured Boolean  @default(false)
+
+  role       String?                   // case-study fields
+  year       String?
+  context    String?
+  highlights String[]       @default([])
+
   images     ProjectImage[]
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
@@ -200,16 +231,17 @@ Do NOT use `@/app/components/...` — components live at the root level, not ins
 
 - **All styling uses inline styles** — no Tailwind, no CSS modules, no styled-components
 - Global styles only in `app/globals.css` (minimal)
-- Design system:
-  - Background: `#f8f6f1` (warm off-white)
-  - Primary text: `#1a1a1a`
-  - Secondary text: `#888` or `#666`
-  - Muted text: `#aaa`
-  - Font: `'Georgia', serif`
-  - Borders: `1px solid #ddd`
-  - No border-radius on most elements (flat, editorial aesthetic)
-  - Letter spacing on uppercase labels: `0.2em`
-  - All nav labels uppercase, `fontSize: 14, letterSpacing: "0.08em"`
+- Design system (neutral graphite and paper with one gold accent; tokens live in `app/globals.css`, use `var(--token)` in inline styles):
+  - Palette: `--paper #f3f3f1` (page), `--ink #1b1c1d`, `--muted #66686a`, `--rule #d1d1cd`, `--panel #2c2e31` (graphite panels), `--accent #e0b040` (gold, on panels)
+  - Audio mode (`<main data-mode="audio">`) swaps `--panel` to enclosure teal `#12424c` and `--accent` to pedal yellow `#f2c230`. Every page sets `data-mode`.
+  - Type: Geist for headings (`.display`) and body, Geist Mono (`.mono`, ONLY for real data such as dates and tags). Loaded via `next/font` in `app/layout.tsx`.
+  - Sentence-case labels. No all-caps tracked eyebrows, no `·` meta strings, no `→` suffixes, no numbered markers unless the content is a sequence.
+  - Layout helpers: `.wrap`, `.section`, `.split`, `.work-grid`, `.index-grid`, `.prose` (markdown). Hover/focus classes: `.link`, `.nav-link`, `.btn`, `.card`, `.tab`.
+  - Emails: portfolio side uses evan@demsey.org, Sharkbomb Audio side uses evan@sharkbomb.net (`emailFor(mode)` in `lib/site.ts`).
+  - The portfolio side never shows prices or "for-sale" tags (`ProjectCard`, `visibleTech`).
+  - Keep motion minimal (hover and focus states only) and respect `prefers-reduced-motion`.
+  - Copy must come from real facts in the résumé (`public/resume.pdf`). No generic marketing lines.
+  - The old Georgia/cream (#f8f6f1) system and the nav/footer snippets below are superseded.
 
 ### Anti-Generic Guardrails
 
@@ -248,7 +280,7 @@ These apply whenever designing new UI from scratch (no reference image provided)
 
 Every public page has its own nav bar (there is no global layout nav).
 The active page link gets `borderBottom: "1px solid #1a1a1a", paddingBottom: 2` added to its style.
-Nav links in order: HOME → PROJECTS → PRODUCTS → ABOUT → CONTACT
+Nav links — general: WORK, ABOUT, RÉSUMÉ, CONTACT (logo = home). Audio: PROJECTS, PRODUCTS, ABOUT, CONTACT. See `components/MobileNav.tsx`.
 
 Standard nav block:
 ```tsx

@@ -14,6 +14,13 @@ async function updateProject(id: string, formData: FormData) {
     .map((s) => s.trim())
     .filter(Boolean);
 
+  const areas = (formData.getAll("areas") as string[]).filter(Boolean);
+  const highlights = ((formData.get("highlights") as string) || "")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
+  const orderRaw = parseInt((formData.get("featuredOrder") as string) || "", 10);
+
   // Images (JSON string -> array)
   const imagesRaw = (formData.get("images") as string) || "[]";
   let images: Img[] = [];
@@ -44,6 +51,15 @@ async function updateProject(id: string, formData: FormData) {
       price: (formData.get("price") as string) || null,
 
       tech,
+
+      areas,
+      featured: formData.get("featured") === "true",
+      featuredOrder: Number.isNaN(orderRaw) ? null : orderRaw,
+      audioFeatured: formData.get("audioFeatured") === "true",
+      role: (formData.get("role") as string) || null,
+      year: (formData.get("year") as string) || null,
+      context: (formData.get("context") as string) || null,
+      highlights,
 
       // Replace-all strategy for gallery images:
       images: {
@@ -94,6 +110,14 @@ export default async function EditProjectPage({
           shopUrl: project.shopUrl ?? "",
           price: project.price ?? "",
           isProduct: project.isProduct ?? false,
+          areas: project.areas ?? [],
+          featured: project.featured,
+          featuredOrder: project.featuredOrder != null ? String(project.featuredOrder) : "",
+          audioFeatured: project.audioFeatured,
+          role: project.role ?? "",
+          year: project.year ?? "",
+          context: project.context ?? "",
+          highlights: project.highlights ?? [],
           images: project.images.map((img) => ({ url: img.url, alt: img.alt ?? undefined })),
         }}
         action={action}
