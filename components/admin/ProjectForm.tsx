@@ -128,14 +128,14 @@ export default function ProjectForm({
         hint="Technical brief. Shown on the All Work side, and on the audio side too until you write an audio version."
       >
         <Field label="Summary">
-          <textarea name="summary" defaultValue={initial.summary} rows={3} style={ui.textarea} className="admin-input" />
+          <textarea name="summary" defaultValue={initial.summary} rows={3} spellCheck style={ui.textarea} className="admin-input" />
         </Field>
         <Field label="Highlights" help="One per line: outcomes and metrics. Shown on both sides.">
-          <textarea name="highlights" defaultValue={initial.highlights.join("\n")} rows={4} placeholder={"Reduced noise floor by 12 dB\nShipped 30 units"} style={ui.textarea} className="admin-input" />
+          <textarea name="highlights" defaultValue={initial.highlights.join("\n")} rows={4} placeholder={"Reduced noise floor by 12 dB\nShipped 30 units"} spellCheck style={ui.textarea} className="admin-input" />
         </Field>
         <Field label="Write-up">
           <div data-color-mode="light">
-            <MDEditor value={contentMd} onChange={(v) => setContentMd(v ?? "")} height={420} />
+            <MDEditor value={contentMd} onChange={(v) => setContentMd(v ?? "")} height={420} textareaProps={{ spellCheck: true }} />
           </div>
         </Field>
       </Section>
@@ -147,11 +147,11 @@ export default function ProjectForm({
           hint="Product brief for the Sharkbomb Audio side. Leave a field empty to use the portfolio version instead."
         >
           <Field label="Audio summary">
-            <textarea name="audioSummary" defaultValue={initial.audioSummary} rows={3} placeholder="What it does, how it sounds, who it's for" style={ui.textarea} className="admin-input" />
+            <textarea name="audioSummary" defaultValue={initial.audioSummary} rows={3} placeholder="What it does, how it sounds, who it's for" spellCheck style={ui.textarea} className="admin-input" />
           </Field>
           <Field label="Audio write-up">
             <div data-color-mode="light">
-              <MDEditor value={audioContentMd} onChange={(v) => setAudioContentMd(v ?? "")} height={320} />
+              <MDEditor value={audioContentMd} onChange={(v) => setAudioContentMd(v ?? "")} height={320} textareaProps={{ spellCheck: true }} />
             </div>
           </Field>
         </Section>
