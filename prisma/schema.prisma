@@ -13,6 +13,11 @@ model Project {
   slug       String         @unique
   summary    String
   content    String?
+
+  // Sharkbomb Audio side overrides: product-brief copy shown instead of
+  // summary/content when a project is viewed in audio mode. Empty = fall back.
+  audioSummary String?
+  audioContent String?
   tech       String[]       @default([])
   coverImage String?
   demoUrl    String?

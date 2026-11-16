@@ -7,7 +7,7 @@ import MobileNav from "@/components/MobileNav";
 import SiteFooter from "@/components/SiteFooter";
 import { areaLabel } from "@/lib/areas";
 import { CONTACT, modeFromParam, withMode } from "@/lib/site";
-import { visibleTech } from "@/components/ProjectCard";
+import { visibleTech, summaryFor } from "@/components/ProjectCard";
 import type { Metadata } from "next";
 
 export const revalidate = 0;
@@ -27,13 +27,16 @@ function extractYouTubeId(url: string): string | null {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ from?: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const project = await prisma.project.findUnique({ where: { slug }, select: { title: true, summary: true } });
+  const mode = modeFromParam((await searchParams).from);
+  const project = await prisma.project.findUnique({ where: { slug }, select: { title: true, summary: true, audioSummary: true } });
   if (!project) return {};
-  return { title: `${project.title} — Evan Demsey`, description: project.summary };
+  return { title: `${project.title} — Evan Demsey`, description: summaryFor(project, mode) };
 }
 
 export default async function ProjectPage({
@@ -60,6 +63,8 @@ export default async function ProjectPage({
   if (!project) return notFound();
 
   const isAudio = mode === "audio";
+  const summary = summaryFor(project, mode);
+  const content = (isAudio && project.audioContent?.trim()) || project.content;
   const tags = visibleTech(project.tech, mode);
   const backHref = isAudio ? (project.isProduct ? "/audio/products" : "/audio/projects") : "/projects";
   const backLabel = isAudio ? (project.isProduct ? "Back to products" : "Back to audio projects") : "Back to work";
@@ -96,7 +101,7 @@ export default async function ProjectPage({
           {project.title}
         </h1>
         <p className="measure" style={{ fontSize: 21, lineHeight: 1.55, color: "var(--muted)", margin: "28px 0 0", maxWidth: "50ch" }}>
-          {project.summary}
+          {summary}
         </p>
         {project.isProduct && project.price && (
           <p className="display" style={{ fontSize: 34, margin: "28px 0 0" }}>{project.price}</p>
@@ -159,9 +164,9 @@ export default async function ProjectPage({
 
       {/* WRITE-UP */}
       <section className="wrap" style={{ paddingBottom: 96 }}>
-        {project.content ? (
+        {content ? (
           <article className="prose">
-            <ReactMarkdown>{project.content}</ReactMarkdown>
+            <ReactMarkdown>{content}</ReactMarkdown>
           </article>
         ) : (
           <p style={{ color: "var(--muted)", fontSize: 16 }}>The write-up for this project is coming soon.</p>

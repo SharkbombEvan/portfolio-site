@@ -210,3 +210,16 @@ a:focus-visible, button:focus-visible {
   .hx > li { padding-top: 0; }
   .hx > li::before { left: -40px; top: 4px; }
 }
+
+/* ── Admin (inline styles elsewhere; these only add hover/focus states) ── */
+.admin-btn { transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease; }
+.admin-btn:hover { opacity: 0.85; }
+.admin-btn:active { transform: scale(0.97); }
+.admin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.admin-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--ink); }
+.admin-row { transition: background-color 0.15s ease; }
+.admin-row:hover { background: var(--paper); }
+.admin-danger:hover { color: #9b2c2c; border-color: #9b2c2c; }
+@media (max-width: 640px) {
+  .admin-row { flex-wrap: wrap; }
+}

@@ -96,7 +96,7 @@ portfolio-site/
 │   └── page.tsx               # Home page (server component)
 ├── components/
 │   ├── admin/
-│   │   ├── EditProjectForm.tsx    # Client component — edit form with image field
+│   │   ├── ProjectForm.tsx        # Client component — shared create/edit form (audio fields appear when Audio area is ticked)
 │   │   └── ProjectImagesField.tsx # Client component — multi-image uploader
 │   └── ImageGallery.tsx           # Client component — grid gallery with lightbox
 ├── lib/
@@ -338,7 +338,7 @@ Standard footer block:
 - Accepts `value: Img[]` and `onChange`
 - Uploads files to `/api/upload`, reads response `data.url`
 - Supports reordering (↑↓) and removal
-- Used in both `EditProjectForm` and `admin/new/page.tsx`
+- Used in `ProjectForm` (shared by `admin/new` and `admin/[id]/edit`)
 
 ---
 
@@ -389,6 +389,10 @@ This disables Next.js caching so data is always fresh from the database.
 - Written using `@uiw/react-md-editor` in admin forms
 - Stored as raw markdown string in `project.content`
 - Rendered using `react-markdown` on the public project detail page
+
+### Separate audio copy
+- `audioSummary` and `audioContent` (nullable) override `summary`/`content` when a project is viewed in audio mode (`?from=audio`, `/audio/*`). Empty falls back to the portfolio copy (`summaryFor` in `components/ProjectCard.tsx`).
+- The admin form shows the audio fields only while the Audio area is ticked. Form parsing is shared in `lib/admin-form.ts`.
 
 ### `isProduct` flag
 - Boolean field on `Project` model
